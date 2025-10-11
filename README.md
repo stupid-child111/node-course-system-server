@@ -17,3 +17,14 @@
 - ![alt text](image-1.png)
 - sequelize init
   - ![alt text](image-2.png)
+  
+- 具体步骤
+
+|步骤	|命令|	说明|
+| --- | --- | --- |
+|第一步	|sequelize model:generate --name Article --attributes ...|	建模型和迁移文件|
+|第二步|	人工处理	|根据需求调整迁移文件
+|第三步|	sequelize db:migrate|	运行迁移，生成数据|表
+|第四步|	sequelize seed:generate --name article	|新建种子文件
+|第五步|	人工处理	|将种子文件修改为自己想填充的数据
+|第六步|	sequelize db:seed --seed xxx-article	|运行种子文件，将数据填充到数据表中
