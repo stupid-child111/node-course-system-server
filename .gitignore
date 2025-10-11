@@ -1,0 +1,51 @@
+# 项目依赖目录
+node_modules
+# npm 缓存目录
+.npm
+
+# 日志文件
+logs
+*.log
+*.log.*
+
+# 环境变量配置文件，里面可能包含敏感信息，如数据库密码、密钥等
+.env
+.env.*
+
+# IDE 和编辑器相关
+# VSCode 配置目录
+.vscode
+# IntelliJ IDEA 配置目录
+.idea
+# WebStorm 等 JetBrains 系列 IDE 的 workspace 配置文件
+*.iml
+*.ipr
+*.iws
+
+# 操作系统生成的隐藏文件
+.DS_Store
+Thumbs.db
+
+# 编译生成的文件或目录，如 Babel 编译后的文件
+dist
+build
+out
+
+# 测试相关的文件或目录
+__tests__
+test-results
+coverage
+
+# 本地开发时的临时文件
+*.tmp
+tmp/
+*.cache
+cache/
+
+# 自定义的临时目录或文件，比如你在开发中创建的临时存储数据的目录
+temp/
+temp-*
+
+# 打包相关的配置文件（如果有）
+*.config.js
+*.config.json
