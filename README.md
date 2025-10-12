@@ -53,3 +53,8 @@
   - 返回了count和rows(数据总数 数据)，rows里才是真正查询到的结果
 - 白名单过滤
   - 封装公共函数,从req中取出title和content作为需要的参数传入
+- 验证表单数据
+  - 文档地址:  https://sequelize.org/docs/v6/core-concepts/validations-and-constraints/
+  - 在model中对字段进行约束
+  - 错误信息通过error.errors数组取出错误message
+  - 返回客户端就行
