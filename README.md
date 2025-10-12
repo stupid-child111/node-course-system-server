@@ -46,3 +46,8 @@
 - 模糊搜索
   - 引入const { Op } = require('sequelize');
   - 相当于SQL语句select * from Articles where title like '%标题 10%' <------>`[Op.like]: `%${query.title}%`
+- 数据分页
+  - 实现分页，用户需要传递**currentPage和pageSize**(当前页  数据条数)两个参数
+  - 然后通过这两个参数，计算出offset(起始数)
+  - 再使用**findAndCountAll**方法进行查询
+  - 返回了count和rows(数据总数 数据)，rows里才是真正查询到的结果

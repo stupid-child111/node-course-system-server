@@ -12,10 +12,16 @@ router.get("/", async function (req, res) {
   try {
     // 获取查询参数
     const query = req.query;
-
+    const currentPage = Math.abs(Number(query.currentPage)) || 1;
+    const pageSize = Math.abs(Number(query.pageSize)) || 10;
+    const offset = (currentPage - 1) * pageSize;
     // 定义查询条件
     const condition = {
       order: [["id", "DESC"]],
+
+      //添加limit和offset
+      limit: pageSize,
+      offset: offset,
     };
 
     // 如果有 title 查询参数，就添加到 where 条件中
@@ -28,14 +34,22 @@ router.get("/", async function (req, res) {
     }
 
     // 查询数据
-    const articles = await Article.findAll(condition);
+    // 将 findAll 方法改为 findAndCountAll 方法
+    // findAndCountAll 方法会返回一个对象，对象中有两个属性，一个是 count，一个是 rows，
+    // count 是查询到的数据的总数，rows 中才是查询到的数据
+    const { count, rows } = await Article.findAndCountAll(condition);
 
     // 返回查询结果
     res.json({
       status: true,
       message: "查询文章列表成功。",
       data: {
-        articles,
+        articles: rows,
+        pagination: {
+          total: count,
+          currentPage,
+          pageSize,
+        },
       },
     });
   } catch (error) {
