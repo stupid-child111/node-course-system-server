@@ -43,3 +43,6 @@
 - 更新文章
   - 先通过id查看是否有
   - 再通过update()更新(异步)
+- 模糊搜索
+  - 引入const { Op } = require('sequelize');
+  - 相当于SQL语句select * from Articles where title like '%标题 10%' <------>`[Op.like]: `%${query.title}%`

@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { Article } = require("../../models");
+const { Op } = require("sequelize");
 
 /***
  * 查询文章列表
@@ -9,16 +10,33 @@ const { Article } = require("../../models");
 
 router.get("/", async function (req, res) {
   try {
+    // 获取查询参数
+    const query = req.query;
+
     // 定义查询条件
     const condition = {
       order: [["id", "DESC"]],
     };
-    //读取数据库操作
+
+    // 如果有 title 查询参数，就添加到 where 条件中
+    if (query.title) {
+      condition.where = {
+        title: {
+          [Op.like]: `%${query.title}%`,
+        },
+      };
+    }
+
+    // 查询数据
     const articles = await Article.findAll(condition);
+
+    // 返回查询结果
     res.json({
       status: true,
-      message: "后端文章的接口",
-      data: { articles },
+      message: "查询文章列表成功。",
+      data: {
+        articles,
+      },
     });
   } catch (error) {
     // 返回错误信息
