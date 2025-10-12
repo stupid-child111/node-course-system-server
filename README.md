@@ -51,3 +51,5 @@
   - 然后通过这两个参数，计算出offset(起始数)
   - 再使用**findAndCountAll**方法进行查询
   - 返回了count和rows(数据总数 数据)，rows里才是真正查询到的结果
+- 白名单过滤
+  - 封装公共函数,从req中取出title和content作为需要的参数传入

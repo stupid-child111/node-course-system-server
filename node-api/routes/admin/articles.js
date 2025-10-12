@@ -98,8 +98,9 @@ router.get("/:id", async function (req, res) {
  */
 router.post("/", async function (req, res) {
   try {
+    const body = filterBody(req);
     // 使用 req.body 获取到用户通过 POST 提交的数据，然后创建文章
-    const article = await Article.create(req.body);
+    const article = await Article.create(body);
 
     res.status(201).json({
       status: true,
@@ -153,9 +154,10 @@ router.delete("/:id", async function (req, res) {
 router.put("/:id", async function (req, res) {
   try {
     const { id } = req.params;
+    const body = filterBody(req);
     const article = await Article.findByPk(id);
     if (article) {
-      await article.update(req.body);
+      await article.update(body);
       res.json({
         status: true,
         message: "更新文章成功。",
@@ -175,4 +177,18 @@ router.put("/:id", async function (req, res) {
     });
   }
 });
+
+
+/**
+ * 公共方法：白名单过滤  只获取需要的参数
+ * @param req
+ * @returns {{title, content: (string|string|DocumentFragment|*)}}
+ */
+function filterBody(req) {
+  return {
+    title: req.body.title,
+    content: req.body.content
+  };
+}
+
 module.exports = router;
