@@ -58,3 +58,5 @@
   - 在model中对字段进行约束
   - 错误信息通过error.errors数组取出错误message
   - 返回客户端就行
+- 何为 **DRY** 原则(Don't Repeat Yourself)
+  - 对于常用的，重复性高的代码，可以做一个封装。
