@@ -28,3 +28,10 @@
 |第四步|	sequelize seed:generate --name article	|新建种子文件
 |第五步|	人工处理	|将种子文件修改为自己想填充的数据
 |第六步|	sequelize db:seed --seed xxx-article	|运行种子文件，将数据填充到数据表中
+
+
+# 注意点
+- 接口获取数据需要主要是否是异步操作(async await)
+- 查询文章详情接口
+  - 配置 **:id** 这种路由，用来接收接口中的参数,通过 **req.params**
+  - 查询单条数据，可以使用**findByPk**
