@@ -85,3 +85,9 @@
 -**种子文件**
   - 编写种子文件（通常位于项目的 seeders 目录下）来定义这些初始数据，并使用 **sequelize db:seed** 命令插入到数据库中
   - **sequelize db:seed:undo** 命令可以撤销上一次种子命令插入的数据
+
+### git restore --staged (恢复文件状态,移出暂存区)
+- **--staged** 参数表示 “从暂存区移除，但保留本地文件的修改”（不会删除你的文件内容）
+### git commit --amend  (适合未push操作)
+- 打开vim编辑器   -->  按 **i** 进入编辑模式 → 修改内容 → 按 **Esc** → 输入 **:wq** 保存退出
+### git reset HEAD~1 (适合已push操作)
