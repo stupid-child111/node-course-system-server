@@ -18,7 +18,10 @@ router.get("/", async function (req, res) {
     const offset = (currentPage - 1) * pageSize;
     // 定义查询条件
     const condition = {
-      order: [["id", "DESC"]],
+      order: [
+        ["rank", "ASC"],
+        ["id", "ASC"],
+      ],
 
       //添加limit和offset
       limit: pageSize,
