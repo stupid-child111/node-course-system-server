@@ -21,6 +21,7 @@ const chaptersRouter = require("./routes/chapters");
 const articlesRouter = require("./routes/articles");
 const settingsRouter = require('./routes/settings');
 const searchRouter = require('./routes/search');
+const authRouter = require('./routes/auth');
 
 const app = express();
 
@@ -46,5 +47,6 @@ app.use("/chapters", chaptersRouter);
 app.use("/articles", articlesRouter);
 app.use("/settings", settingsRouter);
 app.use('/search', searchRouter);
+app.use('/auth', authRouter);
 
 module.exports = app;

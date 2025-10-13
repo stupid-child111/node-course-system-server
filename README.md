@@ -241,3 +241,10 @@ expiresIn：有效期
         }
       ]
   ```
+## 用户注册、登录接口以及用户登录中间件
+- 注册成功后需要返回信息不需要密码
+- 使用**user**对象的**dataValues**中，**delete**掉密码字段，这是**sequelize里的固定用法**。
+  - delete user.dataValues.password; // 删除密码
+- 前台无论是普通用户，还是管理员，都是可以登录
+- Apifox获取到token后，通过后置操作，将获取到的token保存到环境变量中(userToken)
+- 用户页面、用户信息修改、点赞功能，都需要在认证后才能访问接口(user-auth)
