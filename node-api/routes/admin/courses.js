@@ -2,7 +2,8 @@ const express = require("express");
 const router = express.Router();
 const { Course, Category, User, Chapter } = require("../../models");
 const { Op } = require("sequelize");
-const { NotFoundError, failure } = require("../../utils/response");
+const { NotFoundError } = require("../../utils/errors");
+const { success, failure } = require("../../utils/responses");
 
 /***
  * 查询课程列表

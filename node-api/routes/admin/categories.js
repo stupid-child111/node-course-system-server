@@ -2,7 +2,8 @@ const express = require("express");
 const router = express.Router();
 const { Category, Course } = require("../../models");
 const { Op } = require("sequelize");
-const { NotFoundError, failure } = require("../../utils/response");
+const { NotFoundError } = require("../../utils/errors");
+const { success, failure } = require("../../utils/responses");
 
 /***
  * 查询分类列表
@@ -18,7 +19,10 @@ router.get("/", async function (req, res) {
     const offset = (currentPage - 1) * pageSize;
     // 定义查询条件
     const condition = {
-      order: [["rank", "ASC"],["id", "ASC"]],
+      order: [
+        ["rank", "ASC"],
+        ["id", "ASC"],
+      ],
 
       //添加limit和offset
       limit: pageSize,

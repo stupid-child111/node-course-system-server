@@ -1,17 +1,18 @@
 const express = require("express");
 const router = express.Router();
 const { Setting } = require("../../models");
-const { NotFoundError, failure ,success} = require("../../utils/response");
+const { NotFoundError } = require("../../utils/errors");
+const { success, failure } = require("../../utils/responses");
 
 /***
  * 查询系统设置列表
  * GET /admin/articles
  */
 
-router.get('/', async function (req, res) {
+router.get("/", async function (req, res) {
   try {
     const setting = await getSetting();
-    success(res, '查询系统设置成功。', { setting });
+    success(res, "查询系统设置成功。", { setting });
   } catch (error) {
     failure(res, error);
   }
@@ -45,7 +46,7 @@ function filterBody(req) {
   return {
     name: req.body.name,
     icp: req.body.icp,
-    copyright: req.body.copyright
+    copyright: req.body.copyright,
   };
 }
 
@@ -56,7 +57,7 @@ async function getSetting() {
   const setting = await Setting.findOne();
   // const setting = await Setting.findByPk(1);
   if (!setting) {
-    throw new NotFoundError('初始系统设置未找到，请运行种子文件。')
+    throw new NotFoundError("初始系统设置未找到，请运行种子文件。");
   }
 
   return setting;
