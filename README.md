@@ -126,3 +126,9 @@
 - 只需要查询和更新接口
 - 通过findOne()查询设置表的第一条记录即可(或者 fingByPk(1))
 - 白名单过滤获得各个接口需要的字段(用户接口  分类接口   设置接口 都有自己独有的字段)
+
+## 其他问题
+- model使用unique验证
+  - 使用unique验证，必须要给字段加唯一索引。
+  - 出错后，异常的名字是**SequelizeUniqueConstraintError**，而不是SequelizeValidationError。也就说要去resonses.js里增加另一个判断。
+  - 不能通过msg自定义提示信息
