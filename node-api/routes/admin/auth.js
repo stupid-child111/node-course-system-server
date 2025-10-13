@@ -9,6 +9,8 @@ const {
 } = require("../../utils/errors");
 const { success, failure } = require("../../utils/responses");
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const crypto = require("crypto");
 
 /**
  * 管理员登录
@@ -16,6 +18,10 @@ const bcrypt = require("bcryptjs");
  */
 router.post("/sign_in", async (req, res) => {
   try {
+    /**
+     * 生成密钥
+     * console.log(crypto.randomBytes(32).toString("hex"));
+     */
     const { login, password } = req.body;
 
     if (!login) {
@@ -48,8 +54,15 @@ router.post("/sign_in", async (req, res) => {
     if (user.role !== 100) {
       throw new UnauthorizedError("您没有权限登录管理员后台。");
     }
+    const token = jwt.sign(
+      {
+        userId: user.id,
+      },
+      process.env.SECRET,
+      { expiresIn: "30d" }
+    );
 
-    success(res, "登录成功。", {});
+    success(res, "登录成功。", { token });
   } catch (error) {
     failure(res, error);
   }

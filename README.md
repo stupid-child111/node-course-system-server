@@ -195,3 +195,14 @@
 ## 管理员登录验证接口
 - 密码在数据库里，都是加密形式存在的，所以不能直接对比是否相等。 使用**compareSync**方法
 - 登陆验证(邮箱 || 用户名登录) --->验证密码  ---> 验证是否是管理员 **ENDDING**
+  
+## jwt生成token
+```json
+jwt.sign({
+  data: 'foobar'
+}, 'secret', { expiresIn: '1h' });
+```
+- 中间的data：是要生成token的数据。
+secret：自定义秘钥。
+expiresIn：有效期
+- 使用node自带**crypto**生成随机字符串
