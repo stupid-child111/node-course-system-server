@@ -222,3 +222,22 @@ expiresIn：有效期
   - 课程接口中必须有分类 ID，才能查询对应的课程，否则就报错
   - 加入了分页代码
   - 使用 moment.js 处理时间(现在可以使用dayjs或者其他方式)
+
+## 章节、文章、系统信息、搜索接口实现
+- 多级嵌套关联实现
+  ```json
+  include: [
+        {
+          model: Course,
+          as: 'course',
+          attributes: ['id', 'name'],
+          include: [
+            {
+              model: User,
+              as: 'user',
+              attributes: ['id', 'username', 'nickname', 'avatar', 'company'],
+            }
+          ]
+        }
+      ]
+  ```
