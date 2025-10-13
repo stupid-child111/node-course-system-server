@@ -140,3 +140,51 @@
 **注意点**
 - 加密这个步骤，可以在**路由文件里的创建和更新用户**两个地方写这些代码,但是数据验证的时候，特别是长度验证这里。验证的就不是用户实际输入的密码长度，而是加密后的密码长度，这样就验证错了。
 - 在模型中添加set方法,在验证之后再对密码进行加密(this.setDataValue('password', bcrypt.hashSync(value, 10));)
+
+
+## 课程接口
+- 每个课程都是是属于一个分类的，每个课程也是属于某一个用户的。所以这里的**categoryId和userId**在**分类表和用户表中，必须有对应的ID值**。
+- 添加了一个自定义验证**isPresent**，通过用户过传递过来的categoryId和userId去分类表和用户表里查了一下，确保提交的数据有对应的分类和用户。
+- 在验证里，要用到其他模型，前面要加上sequelize.models    (sequelize.models.Category.findByPk(value))
+
+## **课程接口（关联模型）**
+- 这些**表与表之间的关系**，在**Sequelize**里就叫**关联模型**（Associations）。
+  - 如果没有关联模型,需要自己写SQL
+  - 使用关联模型  只需要在模型里定义一次关系：
+    ```javascript
+    static associate(models) {
+      models.Course.belongsTo(models.Category);
+      models.Course.belongsTo(models.User);
+    }
+    ```
+  - 查询的时候直接：
+    ```javascript
+    Course.findByPk(1, {
+      include: [Category, User]
+    });
+    ```
+  - 会自动生成嵌套对象
+    ```json
+    {
+    "id": 1,
+    "title": "Node.js入门",
+    "CategoryId": 2,
+    "UserId": 5,
+    "category": { "id": 2, "name": "后端开发" },
+    "user": { "id": 5, "username": "admin" }
+    }
+    ``` 
+  - 加了 hasMany 之后，我们就可以反向查询：
+      从分类查它下面的所有课程
+      从用户查他创建的所有课程
+
+## 孤儿记录问题处理
+- 数据库里添加外键约束 (产生额外开销  性能瓶颈)
+- 代码层面处理,删除分类时,将分类关联的所有课程删除(不合理)
+- 删除分类时,查询有没有关联的课程,存在,就提示不能删除
+
+## 关联关系总计
+- 查询关联表的数据，可以**在模型中定义关联关系**。然后查询代码中，使用**include**就可以查询到对应的关联数据了。
+  可以用**attributes**，来查询指定的字段，而不用查询出所有字段。
+  可以在attributes里，添加**exclude**，来排除部分不想查询的字段。
+  关联里，可以用**as**来定义别名。但是记住，如果模型里定义了as，**在查询时，也一定要加上as**

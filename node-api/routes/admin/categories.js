@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { Category } = require("../../models");
+const { Category, Course } = require("../../models");
 const { Op } = require("sequelize");
 const { NotFoundError, failure } = require("../../utils/response");
 
@@ -64,7 +64,7 @@ router.get("/", async function (req, res) {
  */
 router.get("/:id", async function (req, res) {
   try {
-    const category = await getArticle(req);
+    const category = await getCategory(req);
     res.json({
       status: true,
       message: "查询分类详情成功",
@@ -101,13 +101,15 @@ router.post("/", async function (req, res) {
  */
 router.delete("/:id", async function (req, res) {
   try {
-    const category = await getArticle(req);
+    const category = await getCategory(req);
+
+    const count = await Course.count({ where: { categoryId: req.params.id } });
+    if (count > 0) {
+      throw new Error("当前分类有课程，无法删除。");
+    }
 
     await category.destroy();
-    res.json({
-      status: true,
-      message: "删除分类成功。",
-    });
+    success(res, "删除分类成功。");
   } catch (error) {
     failure(res, error);
   }
@@ -119,7 +121,7 @@ router.delete("/:id", async function (req, res) {
  */
 router.put("/:id", async function (req, res) {
   try {
-    const category = await getArticle(req);
+    const category = await getCategory(req);
     const body = filterBody(req);
     await category.update(body);
     res.json({
@@ -147,7 +149,7 @@ function filterBody(req) {
 /**
  * 公共方法：查询当前分类
  */
-async function getArticle(req) {
+async function getCategory(req) {
   // 获取分类 ID
   const { id } = req.params;
 
