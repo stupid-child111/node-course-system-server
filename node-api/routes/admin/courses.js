@@ -102,6 +102,7 @@ router.get("/:id", async function (req, res) {
       message: "查询课程详情成功",
       data: course,
     });
+    
   } catch (error) {
     failure(res, error);
   }
@@ -114,14 +115,13 @@ router.get("/:id", async function (req, res) {
 router.post("/", async function (req, res) {
   try {
     const body = filterBody(req);
+    // 获取当前登录的用户 ID
+    body.userId = req.user.id;
+
     // 使用 req.body 获取到用户通过 POST 提交的数据，然后创建课程
     const course = await Course.create(body);
 
-    res.status(201).json({
-      status: true,
-      message: "创建课程成功。",
-      data: course,
-    });
+    success(res, '创建课程成功。', { course }, 201);
   } catch (error) {
     failure(res, error);
   }
@@ -176,7 +176,6 @@ router.put("/:id", async function (req, res) {
 function filterBody(req) {
   return {
     categoryId: req.body.categoryId,
-    userId: req.body.userId,
     name: req.body.name,
     image: req.body.image,
     recommended: req.body.recommended,
