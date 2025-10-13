@@ -73,17 +73,9 @@ router.get("/", async function (req, res) {
     const { count, rows } = await Course.findAndCountAll(condition);
 
     // 返回查询结果
-    res.json({
-      status: true,
-      message: "查询课程列表成功。",
-      data: {
-        courses: rows,
-        pagination: {
-          total: count,
-          currentPage,
-          pageSize,
-        },
-      },
+    success(res, "查询课程列表成功。", {
+      courses: rows,
+      pagination: { total: count, currentPage, pageSize },
     });
   } catch (error) {
     failure(res, error);
@@ -97,12 +89,7 @@ router.get("/", async function (req, res) {
 router.get("/:id", async function (req, res) {
   try {
     const course = await getCourse(req);
-    res.json({
-      status: true,
-      message: "查询课程详情成功",
-      data: course,
-    });
-    
+    success(res, "查询课程详情成功", { course });
   } catch (error) {
     failure(res, error);
   }
@@ -140,10 +127,7 @@ router.delete("/:id", async function (req, res) {
       throw new Error("当前课程有章节，无法删除。");
     }
     await course.destroy();
-    res.json({
-      status: true,
-      message: "删除课程成功。",
-    });
+    success(res, "删除课程成功。");
   } catch (error) {
     failure(res, error);
   }
@@ -158,11 +142,7 @@ router.put("/:id", async function (req, res) {
     const course = await getCourse(req);
     const body = filterBody(req);
     await course.update(body);
-    res.json({
-      status: true,
-      message: "更新课程成功。",
-      data: course,
-    });
+    success(res, "更新课程成功。", { course });
   } catch (error) {
     failure(res, error);
   }

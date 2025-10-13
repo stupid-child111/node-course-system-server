@@ -27,11 +27,7 @@ router.put("/", async function (req, res) {
     const setting = await getSetting(req);
     const body = filterBody(req);
     await setting.update(body);
-    res.json({
-      status: true,
-      message: "更新系统设置成功。",
-      data: setting,
-    });
+    success(res, "更新系统设置成功。", { setting });
   } catch (error) {
     failure(res, error);
   }

@@ -45,17 +45,9 @@ router.get("/", async function (req, res) {
     const { count, rows } = await Category.findAndCountAll(condition);
 
     // 返回查询结果
-    res.json({
-      status: true,
-      message: "查询分类列表成功。",
-      data: {
-        categories: rows,
-        pagination: {
-          total: count,
-          currentPage,
-          pageSize,
-        },
-      },
+    success(res, "查询分类列表成功。", {
+      categories: rows,
+      pagination: { total: count, currentPage, pageSize },
     });
   } catch (error) {
     failure(res, error);
@@ -69,11 +61,7 @@ router.get("/", async function (req, res) {
 router.get("/:id", async function (req, res) {
   try {
     const category = await getCategory(req);
-    res.json({
-      status: true,
-      message: "查询分类详情成功",
-      data: category,
-    });
+    success(res, "查询分类详情成功", { category });
   } catch (error) {
     failure(res, error);
   }
@@ -89,11 +77,7 @@ router.post("/", async function (req, res) {
     // 使用 req.body 获取到用户通过 POST 提交的数据，然后创建分类
     const category = await Category.create(body);
 
-    res.status(201).json({
-      status: true,
-      message: "创建分类成功。",
-      data: category,
-    });
+    success(res, "创建分类成功。", { category }, 201);
   } catch (error) {
     failure(res, error);
   }
@@ -128,11 +112,7 @@ router.put("/:id", async function (req, res) {
     const category = await getCategory(req);
     const body = filterBody(req);
     await category.update(body);
-    res.json({
-      status: true,
-      message: "更新分类成功。",
-      data: category,
-    });
+    success(res, "更新分类成功。", { category });
   } catch (error) {
     failure(res, error);
   }

@@ -53,17 +53,9 @@ router.get("/", async function (req, res) {
     const { count, rows } = await Chapter.findAndCountAll(condition);
 
     // 返回查询结果
-    res.json({
-      status: true,
-      message: "查询章节列表成功。",
-      data: {
-        chapters: rows,
-        pagination: {
-          total: count,
-          currentPage,
-          pageSize,
-        },
-      },
+    success(res, "查询章节列表成功。", {
+      chapters: rows,
+      pagination: { total: count, currentPage, pageSize },
     });
   } catch (error) {
     failure(res, error);
@@ -77,11 +69,7 @@ router.get("/", async function (req, res) {
 router.get("/:id", async function (req, res) {
   try {
     const chapter = await getChapter(req);
-    res.json({
-      status: true,
-      message: "查询章节详情成功",
-      data: chapter,
-    });
+    success(res, "查询章节详情成功", { chapter });
   } catch (error) {
     failure(res, error);
   }
@@ -97,11 +85,7 @@ router.post("/", async function (req, res) {
     // 使用 req.body 获取到用户通过 POST 提交的数据，然后创建章节
     const chapter = await Chapter.create(body);
 
-    res.status(201).json({
-      status: true,
-      message: "创建章节成功。",
-      data: chapter,
-    });
+    success(res, "创建章节成功。", { chapter }, 201);
   } catch (error) {
     failure(res, error);
   }
@@ -116,10 +100,7 @@ router.delete("/:id", async function (req, res) {
     const chapter = await getChapter(req);
 
     await chapter.destroy();
-    res.json({
-      status: true,
-      message: "删除章节成功。",
-    });
+    success(res, "删除章节成功。");
   } catch (error) {
     failure(res, error);
   }
@@ -134,11 +115,7 @@ router.put("/:id", async function (req, res) {
     const chapter = await getChapter(req);
     const body = filterBody(req);
     await chapter.update(body);
-    res.json({
-      status: true,
-      message: "更新章节成功。",
-      data: chapter,
-    });
+    success(res, "更新章节成功。", { chapter });
   } catch (error) {
     failure(res, error);
   }

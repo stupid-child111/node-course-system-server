@@ -42,17 +42,9 @@ router.get("/", async function (req, res) {
     const { count, rows } = await Article.findAndCountAll(condition);
 
     // 返回查询结果
-    res.json({
-      status: true,
-      message: "查询文章列表成功。",
-      data: {
-        articles: rows,
-        pagination: {
-          total: count,
-          currentPage,
-          pageSize,
-        },
-      },
+    success(res, "查询文章列表成功。", {
+      articles: rows,
+      pagination: { total: count, currentPage, pageSize },
     });
   } catch (error) {
     failure(res, error);
@@ -66,11 +58,7 @@ router.get("/", async function (req, res) {
 router.get("/:id", async function (req, res) {
   try {
     const article = await getArticle(req);
-    res.json({
-      status: true,
-      message: "查询文章详情成功",
-      data: article,
-    });
+    success(res, "查询文章详情成功", { article });
   } catch (error) {
     failure(res, error);
   }
@@ -86,11 +74,7 @@ router.post("/", async function (req, res) {
     // 使用 req.body 获取到用户通过 POST 提交的数据，然后创建文章
     const article = await Article.create(body);
 
-    res.status(201).json({
-      status: true,
-      message: "创建文章成功。",
-      data: article,
-    });
+    success(res, "创建文章成功。", { article }, 201);
   } catch (error) {
     failure(res, error);
   }
@@ -105,10 +89,7 @@ router.delete("/:id", async function (req, res) {
     const article = await getArticle(req);
 
     await article.destroy();
-    res.json({
-      status: true,
-      message: "删除文章成功。",
-    });
+    success(res, "删除文章成功。");
   } catch (error) {
     failure(res, error);
   }
@@ -123,11 +104,7 @@ router.put("/:id", async function (req, res) {
     const article = await getArticle(req);
     const body = filterBody(req);
     await article.update(body);
-    res.json({
-      status: true,
-      message: "更新文章成功。",
-      data: article,
-    });
+    success(res, "更新文章成功。", { article });
   } catch (error) {
     failure(res, error);
   }

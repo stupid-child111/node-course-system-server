@@ -64,17 +64,9 @@ router.get("/", async function (req, res) {
     const { count, rows } = await User.findAndCountAll(condition);
 
     // 返回查询结果
-    res.json({
-      status: true,
-      message: "查询用户列表成功。",
-      data: {
-        articles: rows,
-        pagination: {
-          total: count,
-          currentPage,
-          pageSize,
-        },
-      },
+    success(res, "查询用户列表成功。", {
+      users: rows,
+      pagination: { total: count, currentPage, pageSize },
     });
   } catch (error) {
     failure(res, error);
@@ -88,11 +80,7 @@ router.get("/", async function (req, res) {
 router.get("/:id", async function (req, res) {
   try {
     const user = await getArticle(req);
-    res.json({
-      status: true,
-      message: "查询用户详情成功",
-      data: user,
-    });
+    success(res, "查询用户详情成功", { user });
   } catch (error) {
     failure(res, error);
   }
@@ -108,11 +96,7 @@ router.post("/", async function (req, res) {
     // 使用 req.body 获取到用户通过 POST 提交的数据，然后创建用户
     const user = await User.create(body);
 
-    res.status(201).json({
-      status: true,
-      message: "创建用户成功。",
-      data: user,
-    });
+    success(res, "创建用户成功。", { user }, 201);
   } catch (error) {
     failure(res, error);
   }
@@ -128,11 +112,7 @@ router.put("/:id", async function (req, res) {
     const user = await getArticle(req);
     const body = filterBody(req);
     await user.update(body);
-    res.json({
-      status: true,
-      message: "更新用户成功。",
-      data: user,
-    });
+    success(res, "更新用户成功。", { user });
   } catch (error) {
     failure(res, error);
   }
