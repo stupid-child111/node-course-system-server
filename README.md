@@ -132,3 +132,7 @@
   - 使用unique验证，必须要给字段加唯一索引。
   - 出错后，异常的名字是**SequelizeUniqueConstraintError**，而不是SequelizeValidationError。也就说要去resonses.js里增加另一个判断。
   - 不能通过msg自定义提示信息
+
+## 用户接口
+- 邮箱、用户名和用户组，都是用的**eq**，也就是等于的意思，这是做的精确查找，而昵称用了模糊搜索**like**。
+- [Op.eq]: query.email   [Op.like]: `%${ query.nickname }%`
