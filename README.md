@@ -206,3 +206,8 @@ jwt.sign({
 secret：自定义秘钥。
 expiresIn：有效期
 - 使用node自带**crypto**生成随机字符串
+
+## 中间件
+- 就是在运行某一个方法之前，我们**必须**要先去运行的方法。
+- **token验证方法**: jwt.verify(token, process.env.SECRET);
+- **一定要加上next(),才能进入后续路由**
