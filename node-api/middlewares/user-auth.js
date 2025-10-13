@@ -18,7 +18,7 @@ module.exports = async (req, res, next) => {
     const { userId } = decoded;
 
     // 如果通过验证，将 userId挂载到 req 上，方便后续中间件或路由使用
-    req.user = userId;
+    req.userId = userId;
 
     // 一定要加 next()，才能继续进入到后续中间件或路由
     next();
