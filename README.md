@@ -91,3 +91,33 @@
 ### git commit --amend  (适合未push操作)
 - 打开vim编辑器   -->  按 **i** 进入编辑模式 → 修改内容 → 按 **Esc** → 输入 **:wq** 保存退出
 ### git reset HEAD~1 (适合已push操作)
+
+## 参数传递
+### params
+- **Path 参数：是URL 路径的一部分**，用于动态标识资源。
+- **Query 参数：是跟在 URL 问号（?）后面的键值对**，用于对请求进行过滤、分页等额外说明。
+### 其他
+- Body 参数（请求体）,放在 HTTP 请求的 Body 中，不在 URL 里
+  - 用途：传递大量数据或复杂结构（JSON、表单等）
+    - application/json
+       ```json
+       {
+        "username": "test",
+        "password": "123456"
+       }
+       ```    
+    - application/x-www-form-urlencoded
+       ```plaintext
+       username=test&password=123456
+       ``` 
+    - multipart/form-data（上传文件时用）
+- Header 参数（请求头）放在 HTTP 请求头（Header）中
+  - 用途：传递元数据（metadata），比如认证信息、内容类型等
+    ```
+    Authorization: Bearer <token>
+    Content-Type: application/json
+    ```
+- Cookie 参数  放在 HTTP 请求头的 Cookie 字段中
+    ```plaintext
+     Cookie: sessionId=abc123; theme=dark
+    ``` 
