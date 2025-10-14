@@ -95,6 +95,12 @@
 - **保留代码，但取消暂存**  git reset --mixed  (相当于未git add)
 - **完全丢弃提交和代码** git reset --hard
 
+## 对于已经push的操作
+### 修改最后一次提交
+- git stash --> git add **要修改的文件** --> git commit **--amend** --> git push **--force**(强制上传) --> git stash pop
+- --amend 命令修改最近一次提交，会保留原提交的作者和时间，只更新内容 / 提交信息
+- --force  由于修改了已推送的历史，普通 "git push" 会失败，需要用 **--force 强制覆盖远程对应提交**
+
 ## 参数传递
 ### params
 - **Path 参数：是URL 路径的一部分**，用于动态标识资源。
