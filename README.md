@@ -254,3 +254,23 @@ expiresIn：有效期
 - **多对多关联要通过belongsToMany**来定义，定义中需要加上**foreignKey**
 - **关联定义好**后，sequelize就会**自动定义出get、count等等方法**，方便使用
 - 查询多对多关联时，可以使用**joinTableAttributes: []**来排除掉中间表
+
+## SSH使用教程
+- 公网ip:服务器地址  内网ip:XX云内部通信使用
+- 连接服务器:ssh root@公网ip
+### 密钥方式登录
+- **ssh-keygen -t rsa**(生成密钥对)
+- 密钥存放路径:  Windows:C:\Users\你的用户名\.ssh    macOS：open ~/.ssh
+- id_rsa:私钥   id_rsa_pub:公钥
+- 查看公钥:**cat ~/.ssh/id_rsa.pub**
+- 公钥上传XX云  在云服务器上创建密钥对
+#### 对于多个服务器如何解决登录密码问题
+- macOS 用户，使用命令行创建：**touch ~/.ssh/config**
+- Windows 用户，创建一个叫做**config.txt**的文本文档。删除扩展名改为**config**
+```ssh-config
+Host  主机名
+   HostName  公网IP
+   User  用户(root||自定义用户)
+```
+- 直接连接   ssh    主机名
+- 
