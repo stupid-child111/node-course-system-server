@@ -248,3 +248,9 @@ expiresIn：有效期
 - 前台无论是普通用户，还是管理员，都是可以登录
 - Apifox获取到token后，通过后置操作，将获取到的token保存到环境变量中(userToken)
 - 用户页面、用户信息修改、点赞功能，都需要在认证后才能访问接口(user-auth)
+
+## 用户点赞接口(多对多关联)
+- **increment和decrement**:对数据库中的数据，进行自增、自减操作 (course.increment('likesCount'))
+- **多对多关联要通过belongsToMany**来定义，定义中需要加上**foreignKey**
+- **关联定义好**后，sequelize就会**自动定义出get、count等等方法**，方便使用
+- 查询多对多关联时，可以使用**joinTableAttributes: []**来排除掉中间表

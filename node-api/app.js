@@ -23,6 +23,7 @@ const settingsRouter = require("./routes/settings");
 const searchRouter = require("./routes/search");
 const authRouter = require("./routes/auth");
 const userAuth = require("./middlewares/user-auth");
+const likesRouter = require("./routes/likes");
 
 const app = express();
 
@@ -49,5 +50,6 @@ app.use("/articles", articlesRouter);
 app.use("/settings", settingsRouter);
 app.use("/search", searchRouter);
 app.use("/auth", authRouter);
+app.use("/likes", userAuth, likesRouter);
 
 module.exports = app;
