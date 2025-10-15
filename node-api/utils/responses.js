@@ -1,4 +1,5 @@
 const createError = require("http-errors");
+const multer = require("multer");
 /**
  * 请求成功
  * @param res
@@ -25,7 +26,7 @@ function failure(res, error) {
   let errors = "服务器错误";
 
   if (error.name === "SequelizeValidationError") {
-    // Sequelize 验证错误
+    // Sequelize 验证数据错误
     statusCode = 400;
     errors = error.errors.map((e) => e.message);
   } else if (
@@ -39,6 +40,14 @@ function failure(res, error) {
     // http-errors 库创建的错误
     statusCode = error.status;
     errors = error.message;
+  } else if (error instanceof multer.MulterError) {
+    if (error.code === "LIMIT_FILE_SIZE") {
+      statusCode = 413;
+      errors = "文件大小超出限制。";
+    } else {
+      statusCode = 400;
+      errors = error.message;
+    }
   }
 
   res.status(statusCode).json({

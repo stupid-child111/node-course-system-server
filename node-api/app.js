@@ -25,6 +25,7 @@ const searchRouter = require("./routes/search");
 const authRouter = require("./routes/auth");
 const userAuth = require("./middlewares/user-auth");
 const likesRouter = require("./routes/likes");
+const uploadsRouter = require('./routes/uploads');
 
 const app = express();
 
@@ -55,5 +56,6 @@ app.use("/settings", settingsRouter);
 app.use("/search", searchRouter);
 app.use("/auth", authRouter);
 app.use("/likes", userAuth, likesRouter);
+app.use('/uploads', userAuth, uploadsRouter);
 
 module.exports = app;
