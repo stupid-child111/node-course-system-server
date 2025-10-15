@@ -287,3 +287,7 @@ Host  主机名
 ### Chapter 接口修复(admin/chapters)
 - chaptersCount，用来统计每个课程，有多少个章节。之前的开发中并没有使用到。
 - 基础逻辑:每增加一个章节，对应课程的chaptersCount + 1。删掉一个章节，那么就chaptersCount - 1
+
+### 查询用户列表修复(admin/users)
+- 多条件查询时，条件会被 “覆盖”
+- 修复方式：初始化 condition.where 为一个空对象，然后通过直接添加属性的方式合并条件

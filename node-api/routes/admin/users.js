@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { User } = require("../../models");
 const { Op } = require("sequelize");
-const { NotFoundError, failure } = require("../../utils/responses");
+const { NotFoundError, failure, success } = require("../../utils/responses");
 
 /***
  * 查询用户列表
@@ -16,45 +16,30 @@ router.get("/", async function (req, res) {
     const currentPage = Math.abs(Number(query.currentPage)) || 1;
     const pageSize = Math.abs(Number(query.pageSize)) || 10;
     const offset = (currentPage - 1) * pageSize;
-    // 定义查询条件
-    const condition = {
-      order: [["id", "DESC"]],
 
-      //添加limit和offset
+    const condition = {
+      where: {},
+      order: [["id", "DESC"]],
       limit: pageSize,
       offset: offset,
     };
 
     if (query.email) {
-      condition.where = {
-        email: {
-          [Op.eq]: query.email,
-        },
-      };
+      condition.where.email = query.email;
     }
 
     if (query.username) {
-      condition.where = {
-        username: {
-          [Op.eq]: query.username,
-        },
-      };
+      condition.where.username = query.username;
     }
 
     if (query.nickname) {
-      condition.where = {
-        nickname: {
-          [Op.like]: `%${query.nickname}%`,
-        },
+      condition.where.nickname = {
+        [Op.like]: `%${query.nickname}%`,
       };
     }
 
     if (query.role) {
-      condition.where = {
-        role: {
-          [Op.eq]: query.role,
-        },
-      };
+      condition.where.role = query.role;
     }
 
     // 查询数据
@@ -101,7 +86,6 @@ router.post("/", async function (req, res) {
     failure(res, error);
   }
 });
-
 
 /**
  * 更新用户
