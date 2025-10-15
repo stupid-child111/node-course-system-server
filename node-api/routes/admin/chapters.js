@@ -79,13 +79,16 @@ router.get("/:id", async function (req, res) {
  * 创建章节
  * POST /admin/chapters
  */
-router.post("/", async function (req, res) {
+router.post('/', async function (req, res) {
   try {
     const body = filterBody(req);
-    // 使用 req.body 获取到用户通过 POST 提交的数据，然后创建章节
-    const chapter = await Chapter.create(body);
 
-    success(res, "创建章节成功。", { chapter }, 201);
+
+    // 创建章节，并增加课程章节数
+    const chapter = await Chapter.create(body);
+    await Course.increment('chaptersCount', { where: { id: chapter.courseId }});
+
+    success(res, '创建章节成功。', { chapter }, 201);
   } catch (error) {
     failure(res, error);
   }
@@ -95,16 +98,20 @@ router.post("/", async function (req, res) {
  * 删除章节
  * DELETE /admin/chapters/:id
  */
-router.delete("/:id", async function (req, res) {
+router.delete('/:id', async function (req, res) {
   try {
     const chapter = await getChapter(req);
 
+    // 删除章节，并减少课程章节数
     await chapter.destroy();
-    success(res, "删除章节成功。");
+    await Course.decrement('chaptersCount', { where: { id: chapter.courseId }});
+
+    success(res, '删除章节成功。');
   } catch (error) {
     failure(res, error);
   }
 });
+
 
 /**
  * 更新章节

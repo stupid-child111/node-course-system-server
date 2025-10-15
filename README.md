@@ -283,3 +283,7 @@ Host  主机名
 
 ## 问题
 - 科学上网时可能修改IP地址导致无法**通过该ip访问宝塔**,建议**源选中全部IPV4**
+
+### Chapter 接口修复(admin/chapters)
+- chaptersCount，用来统计每个课程，有多少个章节。之前的开发中并没有使用到。
+- 基础逻辑:每增加一个章节，对应课程的chaptersCount + 1。删掉一个章节，那么就chaptersCount - 1
