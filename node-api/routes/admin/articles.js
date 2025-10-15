@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { Article } = require("../../models");
 const { Op } = require("sequelize");
-const { NotFoundError } = require("../../utils/errors");
+const { NotFound } = require('http-errors');
 const { success, failure } = require("../../utils/responses");
 
 /***
@@ -133,7 +133,7 @@ async function getArticle(req) {
 
   // 如果没有找到，就抛出异常
   if (!article) {
-    throw new NotFoundError(`ID: ${id}的文章未找到。`);
+    throw new NotFound(`ID: ${id}的文章未找到。`);
   }
 
   return article;
