@@ -10,7 +10,7 @@ module.exports = {
         type: Sequelize.INTEGER.UNSIGNED,
       },
       categoryId: {
-        type: DataTypes.INTEGER,
+        type: Sequelize.INTEGER,
         allowNull: false,
         validate: {
           notNull: { msg: "分类ID必须填写。" },
@@ -24,7 +24,7 @@ module.exports = {
         },
       },
       userId: {
-        type: DataTypes.INTEGER,
+        type: Sequelize.INTEGER,
         allowNull: false,
         validate: {
           notNull: { msg: "用户ID必须填写。" },
@@ -38,7 +38,7 @@ module.exports = {
         },
       },
       name: {
-        type: DataTypes.STRING,
+        type: Sequelize.STRING,
         allowNull: false,
         validate: {
           notNull: { msg: "名称必须填写。" },
@@ -47,13 +47,13 @@ module.exports = {
         },
       },
       image: {
-        type: DataTypes.STRING,
+        type: Sequelize.STRING,
         validate: {
           isUrl: { msg: "图片地址不正确。" },
         },
       },
       recommended: {
-        type: DataTypes.BOOLEAN,
+        type: Sequelize.BOOLEAN,
         validate: {
           isIn: {
             args: [[true, false]],
@@ -62,7 +62,7 @@ module.exports = {
         },
       },
       introductory: {
-        type: DataTypes.BOOLEAN,
+        type: Sequelize.BOOLEAN,
         validate: {
           isIn: {
             args: [[true, false]],
@@ -70,9 +70,9 @@ module.exports = {
           },
         },
       },
-      content: DataTypes.TEXT,
-      likesCount: DataTypes.INTEGER,
-      chaptersCount: DataTypes.INTEGER,
+      content: Sequelize.TEXT,
+      likesCount: Sequelize.INTEGER,
+      chaptersCount: Sequelize.INTEGER,
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
