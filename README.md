@@ -302,3 +302,7 @@ Host  主机名
   场景：检测（引用）对象的类型，
   参数：object（要检测的对象）instanceof constructor（某个构造函数）
   本质：instanceof运算符用来检测constructor.prototype是否存在于参数object的原型链上。如果存在，返回true；否则返回false
+
+### 错误验证
+- **models/user.js模型中的set方法**。这里也有new Error。但是set里的东西，就**不属于Sequelize的自定义验证**(**不会被Sequelize转成SequelizeValidationError**)了。也就说，不会被转成SequelizeValidationError
+- 所以使用 BadRequest
