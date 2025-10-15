@@ -6,7 +6,7 @@ const { success, failure } = require("../../utils/responses");
 
 /***
  * 查询系统设置列表
- * GET /admin/articles
+ * GET /admin/settings
  */
 
 router.get("/", async function (req, res) {
@@ -20,7 +20,7 @@ router.get("/", async function (req, res) {
 
 /**
  * 更新系统设置
- * PUT /admin/articles/
+ * PUT /admin/settings
  */
 router.put("/", async function (req, res) {
   try {

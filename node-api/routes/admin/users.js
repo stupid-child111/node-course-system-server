@@ -6,7 +6,7 @@ const { NotFoundError, failure, success } = require("../../utils/responses");
 
 /***
  * 查询用户列表
- * GET /admin/articles
+ * GET /admin/users
  */
 
 router.get("/", async function (req, res) {
@@ -73,7 +73,7 @@ router.get("/me", async function (req, res) {
 
 /**
  * 通过 id 查询用户详情
- * GET /admin/articles/:id
+ * GET /admin/users/:id
  */
 router.get("/:id", async function (req, res) {
   try {
@@ -86,7 +86,7 @@ router.get("/:id", async function (req, res) {
 
 /**
  * 创建用户
- * POST /admin/articles
+ * POST /admin/users
  */
 router.post("/", async function (req, res) {
   try {
@@ -102,7 +102,7 @@ router.post("/", async function (req, res) {
 
 /**
  * 更新用户
- * PUT /admin/articles/:id
+ * PUT /admin/users/:id
  */
 router.put("/:id", async function (req, res) {
   try {
