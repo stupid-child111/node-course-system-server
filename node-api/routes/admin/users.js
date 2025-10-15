@@ -59,7 +59,20 @@ router.get("/", async function (req, res) {
 });
 
 /**
- * 查询用户详情
+ * 查询当前登录的用户详情
+ * GET /admin/users/me
+ */
+router.get("/me", async function (req, res) {
+  try {
+    const user = req.user;
+    success(res, "查询当前用户信息成功。", { user });
+  } catch (error) {
+    failure(res, error);
+  }
+});
+
+/**
+ * 通过 id 查询用户详情
  * GET /admin/articles/:id
  */
 router.get("/:id", async function (req, res) {
