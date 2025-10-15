@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { Chapter, Course } = require("../../models");
-const { Op } = require("sequelize");
+const { Op, where } = require("sequelize");
 const { NotFoundError } = require("../../utils/errors");
 const { success, failure } = require("../../utils/responses");
 
@@ -24,6 +24,7 @@ router.get("/", async function (req, res) {
 
     const condition = {
       ...getCondition(),
+      where: {},
       order: [
         ["rank", "ASC"],
         ["id", "ASC"],
@@ -39,7 +40,7 @@ router.get("/", async function (req, res) {
     };
 
     if (query.title) {
-      condition.where = {
+      condition.where.title = {
         title: {
           [Op.like]: `%${query.title}%`,
         },
@@ -79,16 +80,17 @@ router.get("/:id", async function (req, res) {
  * 创建章节
  * POST /admin/chapters
  */
-router.post('/', async function (req, res) {
+router.post("/", async function (req, res) {
   try {
     const body = filterBody(req);
 
-
     // 创建章节，并增加课程章节数
     const chapter = await Chapter.create(body);
-    await Course.increment('chaptersCount', { where: { id: chapter.courseId }});
+    await Course.increment("chaptersCount", {
+      where: { id: chapter.courseId },
+    });
 
-    success(res, '创建章节成功。', { chapter }, 201);
+    success(res, "创建章节成功。", { chapter }, 201);
   } catch (error) {
     failure(res, error);
   }
@@ -98,20 +100,21 @@ router.post('/', async function (req, res) {
  * 删除章节
  * DELETE /admin/chapters/:id
  */
-router.delete('/:id', async function (req, res) {
+router.delete("/:id", async function (req, res) {
   try {
     const chapter = await getChapter(req);
 
     // 删除章节，并减少课程章节数
     await chapter.destroy();
-    await Course.decrement('chaptersCount', { where: { id: chapter.courseId }});
+    await Course.decrement("chaptersCount", {
+      where: { id: chapter.courseId },
+    });
 
-    success(res, '删除章节成功。');
+    success(res, "删除章节成功。");
   } catch (error) {
     failure(res, error);
   }
 });
-
 
 /**
  * 更新章节

@@ -2,8 +2,8 @@ const express = require("express");
 const router = express.Router();
 const { Article } = require("../../models");
 const { Op } = require("sequelize");
-const { NotFoundError } = require('../../utils/errors');
-const { success, failure } = require('../../utils/responses');
+const { NotFoundError } = require("../../utils/errors");
+const { success, failure } = require("../../utils/responses");
 
 /***
  * 查询文章列表
@@ -19,6 +19,7 @@ router.get("/", async function (req, res) {
     const offset = (currentPage - 1) * pageSize;
     // 定义查询条件
     const condition = {
+      where: {},
       order: [["id", "DESC"]],
 
       //添加limit和offset
@@ -28,10 +29,8 @@ router.get("/", async function (req, res) {
 
     // 如果有 title 查询参数，就添加到 where 条件中
     if (query.title) {
-      condition.where = {
-        title: {
-          [Op.like]: `%${query.title}%`,
-        },
+      condition.where.title = {
+        [Op.like]: `%${query.title}%`,
       };
     }
 

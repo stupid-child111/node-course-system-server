@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { Category, Course } = require("../../models");
-const { Op } = require("sequelize");
+const { Op, where } = require("sequelize");
 const { NotFoundError } = require("../../utils/errors");
 const { success, failure } = require("../../utils/responses");
 
@@ -19,6 +19,7 @@ router.get("/", async function (req, res) {
     const offset = (currentPage - 1) * pageSize;
     // 定义查询条件
     const condition = {
+      where:{},
       order: [
         ["rank", "ASC"],
         ["id", "ASC"],
@@ -31,7 +32,7 @@ router.get("/", async function (req, res) {
 
     // 如果有 name 查询参数，就添加到 where 条件中
     if (query.name) {
-      condition.where = {
+      condition.where.name = {
         name: {
           [Op.like]: `%${query.name}%`,
         },

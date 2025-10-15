@@ -20,50 +20,32 @@ router.get("/", async function (req, res) {
     // 定义查询条件
     const condition = {
       ...getCondition(),
+      where: {},
       order: [["id", "DESC"]],
       limit: pageSize,
       offset: offset,
     };
 
     if (query.categoryId) {
-      condition.where = {
-        categoryId: {
-          [Op.eq]: query.categoryId,
-        },
-      };
+      condition.where.categoryId = query.categoryId;
     }
 
     if (query.userId) {
-      condition.where = {
-        userId: {
-          [Op.eq]: query.userId,
-        },
-      };
+      condition.where.userId = query.userId;
     }
 
     if (query.name) {
-      condition.where = {
-        name: {
-          [Op.like]: `%${query.name}%`,
-        },
+      condition.where.name = {
+        [Op.like]: `%${query.name}%`,
       };
     }
 
     if (query.recommended) {
-      condition.where = {
-        recommended: {
-          // 需要转布尔值
-          [Op.eq]: query.recommended === "true",
-        },
-      };
+      condition.where.recommended = query.recommended === "true";
     }
 
     if (query.introductory) {
-      condition.where = {
-        introductory: {
-          [Op.eq]: query.introductory === "true",
-        },
-      };
+      condition.where.introductory = query.introductory === "true";
     }
 
     // 查询数据
@@ -108,7 +90,7 @@ router.post("/", async function (req, res) {
     // 使用 req.body 获取到用户通过 POST 提交的数据，然后创建课程
     const course = await Course.create(body);
 
-    success(res, '创建课程成功。', { course }, 201);
+    success(res, "创建课程成功。", { course }, 201);
   } catch (error) {
     failure(res, error);
   }
