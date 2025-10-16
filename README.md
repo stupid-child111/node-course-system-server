@@ -345,3 +345,8 @@ Host  主机名
 
 ##### Apifox上传中文文件出错
 - public/demo下创建oss_direct_upload.html文件夹测试
+
+### 解决统计数错误问题
+- getCondition里增加：distinct: true(查询中去重)
+### 关联数据排序无效问题
+- 这种**一对多的关联查询**，推荐不要用include来做(嵌套过深)，直接分开查更好。我们将include直接删掉，改为依次分别查询对应的关联数据。完成后，将查到的数据都返回出来。
