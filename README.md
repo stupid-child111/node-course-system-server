@@ -318,3 +318,30 @@ Host  主机名
   - 删除附件
     - 1.先删除阿里云OSS中的文件(client.delete)
     - 2.删掉数据库中的附件记录
+
+### 客户端直传上传文件接口
+- 使用uuid生成唯一识别码
+- 1.使用GET 接口：/uploads/aliyun_direct  获取阿里云 OOS 授权信息
+  - 后置操作存放好
+    ```json
+    AliyunPolicy：data.policy
+    AliyunSignature：data.signature
+    AliyunAccessid：data.accessid
+    AliyunKey：data.key
+    ```
+  - url，就是完整的文件访问地址
+- 2.使用上传接口上传到阿里云 OSS
+  - 返回状态码204，但是没有返回任何提示信息。但是其实已经成功
+- 在Vue或者React项目里上传，会出现跨域错误
+  - 在阿里云OSS 跨域设置中设置跨域规则
+    ```json
+    来源：*
+    允许 Methods：POST
+    允许 Headers：*
+    ```
+#### 骚操作
+- 在图片处理中 在图片路径之后加上参数,可以显示处理后的图片(裁剪 加水印)  还可以设置防盗链
+- 静止公开访问 --> Bucket设置未私有 --> 域名管理绑定自定义域名 + SSL证书 + 开启CDN加速(在各个机房缓存,提高访问速度)    这样之后用户必须通过CDN访问(访问CDN的米 < 访问OSS的米)
+
+##### Apifox上传中文文件出错
+- public/demo下创建oss_direct_upload.html文件夹测试
