@@ -1,7 +1,7 @@
 "use strict";
 const { Model } = require("sequelize");
 const bcrypt = require("bcryptjs");
-const { BadRequest } = require('http-errors');
+const { BadRequest } = require("http-errors");
 
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
@@ -17,6 +17,7 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "userId",
         as: "likeCourses",
       });
+      models.User.hasMany(models.Attachment, { as: "attachments" });
     }
   }
   User.init(

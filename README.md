@@ -306,3 +306,15 @@ Host  主机名
 ### 错误验证
 - **models/user.js模型中的set方法**。这里也有new Error。但是set里的东西，就**不属于Sequelize的自定义验证**(**不会被Sequelize转成SequelizeValidationError**)了。也就说，不会被转成SequelizeValidationError
 - 所以使用 BadRequest
+
+### 附件管理接口
+- 增加关联关系
+  - 每个用户都有很多附件，每个附件都属于某一个用户。
+    - models.Attachment.belongsTo(models.User, { as: 'user' });
+    - models.User.hasMany(models.Attachment, { as: 'attachments' });
+- 客户端上传接口增加上传记录
+- 附件管理模块
+  - 可以列出来所有的附件信息，还要显示关联的用户头像。
+  - 删除附件
+    - 1.先删除阿里云OSS中的文件(client.delete)
+    - 2.删掉数据库中的附件记录

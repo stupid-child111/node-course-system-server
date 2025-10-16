@@ -25,7 +25,8 @@ const searchRouter = require("./routes/search");
 const authRouter = require("./routes/auth");
 const userAuth = require("./middlewares/user-auth");
 const likesRouter = require("./routes/likes");
-const uploadsRouter = require('./routes/uploads');
+const uploadsRouter = require("./routes/uploads");
+const adminAttachmentsRouter = require("./routes/admin/attachments");
 
 const app = express();
 
@@ -35,8 +36,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
-
-
 
 app.use("/", indexRouter);
 app.use("/users", userAuth, usersRouter);
@@ -56,6 +55,7 @@ app.use("/settings", settingsRouter);
 app.use("/search", searchRouter);
 app.use("/auth", authRouter);
 app.use("/likes", userAuth, likesRouter);
-app.use('/uploads', userAuth, uploadsRouter);
+app.use("/uploads", userAuth, uploadsRouter);
+app.use("/admin/attachments", adminAuth, adminAttachmentsRouter);
 
 module.exports = app;
