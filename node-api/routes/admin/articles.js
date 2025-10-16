@@ -1,9 +1,9 @@
 const express = require("express");
 const router = express.Router();
-const { Article } = require("../../models");
-const { Op } = require("sequelize");
-const { NotFound } = require('http-errors');
-const { success, failure } = require("../../utils/responses");
+const {Article} = require("../../models");
+const {Op} = require("sequelize");
+const {NotFound} = require('http-errors');
+const {success, failure} = require("../../utils/responses");
 
 /***
  * 查询文章列表
@@ -11,43 +11,47 @@ const { success, failure } = require("../../utils/responses");
  */
 
 router.get("/", async function (req, res) {
-  try {
-    // 获取查询参数
-    const query = req.query;
-    const currentPage = Math.abs(Number(query.currentPage)) || 1;
-    const pageSize = Math.abs(Number(query.pageSize)) || 10;
-    const offset = (currentPage - 1) * pageSize;
-    // 定义查询条件
-    const condition = {
-      where: {},
-      order: [["id", "DESC"]],
+    try {
+        // 获取查询参数
+        const query = req.query;
+        const currentPage = Math.abs(Number(query.currentPage)) || 1;
+        const pageSize = Math.abs(Number(query.pageSize)) || 10;
+        const offset = (currentPage - 1) * pageSize;
+        // 定义查询条件
+        const condition = {
+            where: {}, order: [["id", "DESC"]],
 
-      //添加limit和offset
-      limit: pageSize,
-      offset: offset,
-    };
+            //添加limit和offset
+            limit: pageSize, offset: offset,
+        };
+        // 查询被软删除的数据
+        if (query.deleted === 'true') {
+            condition.paranoid = false;
+            condition.where.deletedAt = {
+                [Op.not]: null
+            }
+        }
 
-    // 如果有 title 查询参数，就添加到 where 条件中
-    if (query.title) {
-      condition.where.title = {
-        [Op.like]: `%${query.title}%`,
-      };
+        // 如果有 title 查询参数，就添加到 where 条件中
+        if (query.title) {
+            condition.where.title = {
+                [Op.like]: `%${query.title}%`,
+            };
+        }
+
+        // 查询数据
+        // 将 findAll 方法改为 findAndCountAll 方法
+        // findAndCountAll 方法会返回一个对象，对象中有两个属性，一个是 count，一个是 rows，
+        // count 是查询到的数据的总数，rows 中才是查询到的数据
+        const {count, rows} = await Article.findAndCountAll(condition);
+
+        // 返回查询结果
+        success(res, "查询文章列表成功。", {
+            articles: rows, pagination: {total: count, currentPage, pageSize},
+        });
+    } catch (error) {
+        failure(res, error);
     }
-
-    // 查询数据
-    // 将 findAll 方法改为 findAndCountAll 方法
-    // findAndCountAll 方法会返回一个对象，对象中有两个属性，一个是 count，一个是 rows，
-    // count 是查询到的数据的总数，rows 中才是查询到的数据
-    const { count, rows } = await Article.findAndCountAll(condition);
-
-    // 返回查询结果
-    success(res, "查询文章列表成功。", {
-      articles: rows,
-      pagination: { total: count, currentPage, pageSize },
-    });
-  } catch (error) {
-    failure(res, error);
-  }
 });
 
 /**
@@ -55,12 +59,12 @@ router.get("/", async function (req, res) {
  * GET /admin/articles/:id
  */
 router.get("/:id", async function (req, res) {
-  try {
-    const article = await getArticle(req);
-    success(res, "查询文章详情成功", { article });
-  } catch (error) {
-    failure(res, error);
-  }
+    try {
+        const article = await getArticle(req);
+        success(res, "查询文章详情成功", {article});
+    } catch (error) {
+        failure(res, error);
+    }
 });
 
 /**
@@ -68,45 +72,78 @@ router.get("/:id", async function (req, res) {
  * POST /admin/articles
  */
 router.post("/", async function (req, res) {
-  try {
-    const body = filterBody(req);
-    // 使用 req.body 获取到用户通过 POST 提交的数据，然后创建文章
-    const article = await Article.create(body);
+    try {
+        const body = filterBody(req);
+        // 使用 req.body 获取到用户通过 POST 提交的数据，然后创建文章
+        const article = await Article.create(body);
 
-    success(res, "创建文章成功。", { article }, 201);
-  } catch (error) {
-    failure(res, error);
-  }
+        success(res, "创建文章成功。", {article}, 201);
+    } catch (error) {
+        failure(res, error);
+    }
 });
 
 /**
- * 删除文章
- * DELETE /admin/articles/:id
+ * 删除到回收站
+ * POST /admin/articles/delete
  */
-router.delete("/:id", async function (req, res) {
-  try {
-    const article = await getArticle(req);
+router.post('/delete', async function (req, res) {
+    try {
+        const {id} = req.body;
 
-    await article.destroy();
-    success(res, "删除文章成功。");
-  } catch (error) {
-    failure(res, error);
-  }
+        await Article.destroy({where: {id: id}});
+        success(res, '已删除到回收站。');
+    } catch (error) {
+        failure(res, error);
+    }
 });
+
+/**
+ * 从回收站恢复
+ * POST /admin/articles/restore
+ */
+router.post('/restore', async function (req, res) {
+    try {
+        const {id} = req.body;
+
+        await Article.restore({where: {id: id}});
+        success(res, '已恢复成功。')
+    } catch (error) {
+        failure(res, error);
+    }
+});
+
+/**
+ * 彻底删除
+ * POST /admin/articles/force_delete
+ */
+router.post('/force_delete', async function (req, res,) {
+    try {
+        const {id} = req.body;
+
+        await Article.destroy({
+            where: {id: id}, force: true
+        });
+        success(res, '已彻底删除。');
+    } catch (error) {
+        failure(res, error);
+    }
+});
+
 
 /**
  * 更新文章
  * PUT /admin/articles/:id
  */
 router.put("/:id", async function (req, res) {
-  try {
-    const article = await getArticle(req);
-    const body = filterBody(req);
-    await article.update(body);
-    success(res, "更新文章成功。", { article });
-  } catch (error) {
-    failure(res, error);
-  }
+    try {
+        const article = await getArticle(req);
+        const body = filterBody(req);
+        await article.update(body);
+        success(res, "更新文章成功。", {article});
+    } catch (error) {
+        failure(res, error);
+    }
 });
 
 /**
@@ -115,28 +152,27 @@ router.put("/:id", async function (req, res) {
  * @returns {{title, content: (string|string|DocumentFragment|*)}}
  */
 function filterBody(req) {
-  return {
-    title: req.body.title,
-    content: req.body.content,
-  };
+    return {
+        title: req.body.title, content: req.body.content,
+    };
 }
 
 /**
  * 公共方法：查询当前文章
  */
 async function getArticle(req) {
-  // 获取文章 ID
-  const { id } = req.params;
+    // 获取文章 ID
+    const {id} = req.params;
 
-  // 查询当前文章
-  const article = await Article.findByPk(id);
+    // 查询当前文章
+    const article = await Article.findByPk(id);
 
-  // 如果没有找到，就抛出异常
-  if (!article) {
-    throw new NotFound(`ID: ${id}的文章未找到。`);
-  }
+    // 如果没有找到，就抛出异常
+    if (!article) {
+        throw new NotFound(`ID: ${id}的文章未找到。`);
+    }
 
-  return article;
+    return article;
 }
 
 module.exports = router;
