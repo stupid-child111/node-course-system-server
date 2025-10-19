@@ -100,7 +100,7 @@ router.delete("/:id", async function (req, res) {
     }
 
     await category.destroy();
-    await clearCache();
+    await clearCache(category);
 
     success(res, "删除分类成功。");
   } catch (error) {
@@ -117,7 +117,7 @@ router.put("/:id", async function (req, res) {
     const category = await getCategory(req);
     const body = filterBody(req);
     await category.update(body);
-    await clearCache();
+    await clearCache(category);
 
     success(res, "更新分类成功。", { category });
   } catch (error) {
@@ -157,10 +157,15 @@ async function getCategory(req) {
 
 /**
  * 清除缓存
+ * @param category
  * @returns {Promise<void>}
  */
-async function clearCache() {
+async function clearCache(category = null) {
   await delKey("categories");
+
+  if (category) {
+    await delKey(`category:${category.id}`);
+  }
 }
 
 module.exports = router;

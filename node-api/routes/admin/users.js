@@ -3,6 +3,7 @@ const router = express.Router();
 const { User } = require("../../models");
 const { Op } = require("sequelize");
 const { NotFound, failure, success } = require("../../utils/responses");
+const { delKey } = require("../../utils/redis");
 
 /***
  * 查询用户列表
@@ -109,6 +110,8 @@ router.put("/:id", async function (req, res) {
     const user = await getArticle(req);
     const body = filterBody(req);
     await user.update(body);
+    await clearCache(user);
+
     success(res, "更新用户成功。", { user });
   } catch (error) {
     failure(res, error);
@@ -150,6 +153,15 @@ async function getArticle(req) {
   }
 
   return user;
+}
+
+/**
+ * 清除缓存
+ * @param user
+ * @returns {Promise<void>}
+ */
+async function clearCache(user) {
+  await delKey(`user:${user.id}`);
 }
 
 module.exports = router;
