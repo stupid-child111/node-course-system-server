@@ -100,6 +100,9 @@
 - git stash --> git add **要修改的文件** --> git commit **--amend** --> git push **--force**(强制上传) --> git stash pop
 - --amend 命令修改最近一次提交，会保留原提交的作者和时间，只更新内容 / 提交信息
 - --force  由于修改了已推送的历史，普通 "git push" 会失败，需要用 **--force 强制覆盖远程对应提交**
+  
+### 对于跳转到之前的提交
+- git log --oneline(查看提交历史hash) -->  git reset --hard  hash值(撤回到历史某一次提交) -->  git push --force origin main(强制提交,并删除之后的提交历史)
 
 ## 参数传递
 ### params
