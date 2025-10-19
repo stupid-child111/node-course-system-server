@@ -27,6 +27,7 @@ const userAuth = require("./middlewares/user-auth");
 const likesRouter = require("./routes/likes");
 const uploadsRouter = require("./routes/uploads");
 const adminAttachmentsRouter = require("./routes/admin/attachments");
+const captchaRouter = require("./routes/captcha");
 
 const app = express();
 
@@ -57,5 +58,6 @@ app.use("/auth", authRouter);
 app.use("/likes", userAuth, likesRouter);
 app.use("/uploads", userAuth, uploadsRouter);
 app.use("/admin/attachments", adminAuth, adminAttachmentsRouter);
+app.use("/captcha", captchaRouter);
 
 module.exports = app;
