@@ -1,9 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const { Setting } = require("../../models");
-const { NotFound } = require('http-errors');
+const { NotFound } = require("http-errors");
 const { success, failure } = require("../../utils/responses");
-const {delKey} = require("../../utils/redis");
+const { delKey, flushAll } = require("../../utils/redis");
 
 /***
  * 查询系统设置列表
@@ -30,7 +30,7 @@ router.put("/", async function (req, res) {
     await setting.update(body);
 
     //删除缓存
-      await delKey("setting")
+    await delKey("setting");
     success(res, "更新系统设置成功。", { setting });
   } catch (error) {
     failure(res, error);
@@ -62,5 +62,17 @@ async function getSetting() {
 
   return setting;
 }
+
+/**
+ * 清除所有缓存
+ */
+router.get("/flush-all", async function (req, res) {
+  try {
+    await flushAll();
+    success(res, "清除所有缓存成功。");
+  } catch (error) {
+    failure(res, error);
+  }
+});
 
 module.exports = router;

@@ -4,7 +4,6 @@ const { Setting } = require("../models");
 const { NotFound } = require("http-errors");
 const { success, failure } = require("../utils/responses");
 const { setKey, getKey } = require("../utils/redis");
-const { delKey, flushAll } = require("../../utils/redis");
 
 /**
  * 查询系统信息
@@ -30,18 +29,6 @@ router.get("/", async function (req, res) {
     }
 
     success(res, "查询系统信息成功。", { setting });
-  } catch (error) {
-    failure(res, error);
-  }
-});
-
-/**
- * 清除所有缓存
- */
-router.get("/flush-all", async function (req, res) {
-  try {
-    await flushAll();
-    success(res, "清除所有缓存成功。");
   } catch (error) {
     failure(res, error);
   }
