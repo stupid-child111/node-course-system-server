@@ -50,6 +50,9 @@ importers:
       mysql2:
         specifier: ^3.15.2
         version: 3.15.2
+      nodemailer:
+        specifier: ^7.0.9
+        version: 7.0.9
       nodemon:
         specifier: ^3.1.10
         version: 3.1.10
@@ -560,6 +563,10 @@ packages:
   node-hex@1.0.1:
     resolution: {integrity: sha512-iwpZdvW6Umz12ICmu9IYPRxg0tOLGmU3Tq2tKetejCj3oZd7b2nUXwP3a7QA5M9glWy8wlPS1G3RwM/CdsUbdQ==}
     engines: {node: '>=8.0.0'}
+
+  nodemailer@7.0.9:
+    resolution: {integrity: sha512-9/Qm0qXIByEP8lEV2qOqcAW7bRpL8CR9jcTwk3NBnHJNmP9fIJ86g2fgmIXqHY+nj55ZEMwWqYAT2QTDpRUYiQ==}
+    engines: {node: '>=6.0.0'}
 
   nodemon@3.1.10:
     resolution: {integrity: sha512-WDjw3pJ0/0jMFmyNDp3gvY2YizjLmmOUQo6DEBY+JgdvW/yQ9mEeSw6H5ythl5Ny2ytb7f9C2nIbjSxMNzbJXw==}
@@ -1411,6 +1418,8 @@ snapshots:
   negotiator@0.6.3: {}
 
   node-hex@1.0.1: {}
+
+  nodemailer@7.0.9: {}
 
   nodemon@3.1.10:
     dependencies:

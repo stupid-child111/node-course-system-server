@@ -8,6 +8,7 @@ const jwt = require("jsonwebtoken");
 const { Op } = require("sequelize");
 const validateCaptcha = require("../middlewares/validate-captcha");
 const { delKey } = require("../utils/redis");
+const sendMail = require("../utils/mail");
 
 /**
  * 用户注册
@@ -28,6 +29,16 @@ router.post("/sign_up", validateCaptcha, async function (req, res) {
     delete user.dataValues.password; // 删除密码
     // 请求成功，删除验证码，防止重复使用
     await delKey(req.body.captchaKey);
+
+    // 发送邮件
+    const html = `
+  您好，<span style="color: red">${user.nickname}。</span><br><br>
+  恭喜，您已成功注册会员！<br><br>
+  请访问<a href="https://clwy.cn">「xmy和xhx的小窝」</a>官网，了解更多。<br><br>
+  ━━━━━━━━━━━━━━━━<br>
+  长乐未央
+`;
+    await sendMail(user.email, "「xmy和xhx的小窝」的注册成功通知", html);
 
     success(res, "创建用户成功。", { user }, 201);
   } catch (error) {
