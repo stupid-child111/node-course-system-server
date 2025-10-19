@@ -4,6 +4,7 @@ const { Category, Course } = require("../../models");
 const { Op } = require("sequelize");
 const { NotFound, Conflict } = require("http-errors");
 const { success, failure } = require("../../utils/responses");
+const { delKey } = require("../../utils/redis");
 
 /***
  * 查询分类列表
@@ -77,6 +78,7 @@ router.post("/", async function (req, res) {
     const body = filterBody(req);
     // 使用 req.body 获取到用户通过 POST 提交的数据，然后创建分类
     const category = await Category.create(body);
+    await clearCache();
 
     success(res, "创建分类成功。", { category }, 201);
   } catch (error) {
@@ -98,6 +100,8 @@ router.delete("/:id", async function (req, res) {
     }
 
     await category.destroy();
+    await clearCache();
+
     success(res, "删除分类成功。");
   } catch (error) {
     failure(res, error);
@@ -113,6 +117,8 @@ router.put("/:id", async function (req, res) {
     const category = await getCategory(req);
     const body = filterBody(req);
     await category.update(body);
+    await clearCache();
+
     success(res, "更新分类成功。", { category });
   } catch (error) {
     failure(res, error);
@@ -147,6 +153,14 @@ async function getCategory(req) {
   }
 
   return category;
+}
+
+/**
+ * 清除缓存
+ * @returns {Promise<void>}
+ */
+async function clearCache() {
+  await delKey("categories");
 }
 
 module.exports = router;
