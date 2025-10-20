@@ -1,5 +1,10 @@
 # 忽略 node_modules
 node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-lock.yaml
+pnpm lock.yaml
 
 # 忽略日志文件
 logs/
@@ -51,3 +56,25 @@ temp-*/
 
 # 忽略任意位置的 data/mysql 目录（更通用）
 data/mysql/
+
+
+
+# RabbitMQ runtime files
+rabbit_*
+nodes_running*
+cluster_nodes*
+*.dets
+*.DAT
+*.rdq
+*.wal
+recovery.dets
+
+# 其他临时文件
+*.tmp
+*.log
+
+# Config files
+.config
+.vhost
+config
+.pid
