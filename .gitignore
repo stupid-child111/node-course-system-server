@@ -76,5 +76,4 @@ recovery.dets
 # Config files
 .config
 .vhost
-config
 .pid
