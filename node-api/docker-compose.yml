@@ -1,8 +1,7 @@
 services:
   mysql:
     image: mysql:8.3.0
-    command:
-      --default-authentication-plugin=mysql_native_password
+    command: --default-authentication-plugin=mysql_native_password
       --character-set-server=utf8mb4
       --collation-server=utf8mb4_general_ci
     environment:
@@ -18,3 +17,13 @@ services:
       - "6379:6379"
     volumes:
       - ./data/redis:/data
+  rabbitmq:
+    image: rabbitmq:4.0-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - ./data/rabbitmq:/var/lib/rabbitmq # 持久化数据
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: 111111
