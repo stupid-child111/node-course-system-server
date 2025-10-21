@@ -3,7 +3,9 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "nodemon ./bin/www"
+    "start": "nodemon ./bin/www",
+    "format:check": "prettier --check \"**/*.{js,json,md}\"",
+    "format": "prettier --write \"**/*.{js,json,md}\""
   },
   "dependencies": {
     "ali-oss": "^6.23.0",
@@ -29,5 +31,8 @@
     "uuid": "^13.0.0",
     "winston": "^3.18.3",
     "winston-mysql": "^1.1.1"
+  },
+  "devDependencies": {
+    "prettier": "^3.6.2"
   }
 }
