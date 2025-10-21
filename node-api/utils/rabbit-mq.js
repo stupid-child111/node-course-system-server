@@ -1,6 +1,6 @@
-const amqp = require("amqplib");
-const sendMail = require("./mail");
-const logger = require("./logger");
+const amqp = require('amqplib');
+const sendMail = require('./mail');
+const logger = require('./logger');
 
 // 创建全局的 RabbitMQ 连接和通道
 let connection;
@@ -16,9 +16,9 @@ const connectToRabbitMQ = async () => {
   try {
     connection = await amqp.connect(process.env.RABBITMQ_URL);
     channel = await connection.createChannel();
-    await channel.assertQueue("mail_queue", { durable: true });
+    await channel.assertQueue('mail_queue', { durable: true });
   } catch (error) {
-    logger.error("RabbitMQ 连接失败：", error);
+    logger.error('RabbitMQ 连接失败：', error);
   }
 };
 
@@ -29,11 +29,11 @@ const mailProducer = async (msg) => {
   try {
     await connectToRabbitMQ(); // 确保已连接
 
-    channel.sendToQueue("mail_queue", Buffer.from(JSON.stringify(msg)), {
+    channel.sendToQueue('mail_queue', Buffer.from(JSON.stringify(msg)), {
       persistent: true,
     });
   } catch (error) {
-    logger.error("邮件队列生产者错误：", error);
+    logger.error('邮件队列生产者错误：', error);
   }
 };
 
@@ -44,7 +44,7 @@ const mailConsumer = async () => {
   try {
     await connectToRabbitMQ();
     channel.consume(
-      "mail_queue",
+      'mail_queue',
       async (msg) => {
         const message = JSON.parse(msg.content.toString());
         await sendMail(message.to, message.subject, message.html);
@@ -54,7 +54,7 @@ const mailConsumer = async () => {
       }
     );
   } catch (error) {
-    logger.error("邮件队列消费者错误：", error);
+    logger.error('邮件队列消费者错误：', error);
   }
 };
 

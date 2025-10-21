@@ -1,15 +1,15 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const { Article } = require("../models");
-const { success, failure } = require("../utils/responses");
-const { NotFound } = require("http-errors");
-const { setKey, getKey } = require("../utils/redis");
+const { Article } = require('../models');
+const { success, failure } = require('../utils/responses');
+const { NotFound } = require('http-errors');
+const { setKey, getKey } = require('../utils/redis');
 
 /**
  * 查询文章列表
  * GET /articles
  */
-router.get("/", async function (req, res) {
+router.get('/', async function (req, res) {
   try {
     const query = req.query;
     const currentPage = Math.abs(Number(query.currentPage)) || 1;
@@ -20,12 +20,12 @@ router.get("/", async function (req, res) {
     const cacheKey = `articles:${currentPage}:${pageSize}`;
     let data = await getKey(cacheKey);
     if (data) {
-      return success(res, "查询文章列表成功。", data);
+      return success(res, '查询文章列表成功。', data);
     }
 
     const condition = {
-      attributes: { exclude: ["content"] },
-      order: [["id", "DESC"]],
+      attributes: { exclude: ['content'] },
+      order: [['id', 'DESC']],
       limit: pageSize,
       offset: offset,
     };
@@ -40,7 +40,7 @@ router.get("/", async function (req, res) {
       },
     };
     await setKey(cacheKey, data);
-    success(res, "查询文章列表成功。", data);
+    success(res, '查询文章列表成功。', data);
   } catch (error) {
     failure(res, error);
   }
@@ -50,7 +50,7 @@ router.get("/", async function (req, res) {
  * 查询文章详情
  * GET /articles/:id
  */
-router.get("/:id", async function (req, res) {
+router.get('/:id', async function (req, res) {
   try {
     const { id } = req.params;
 
@@ -63,7 +63,7 @@ router.get("/:id", async function (req, res) {
       await setKey(`article:${id}`, article);
     }
 
-    success(res, "查询文章成功。", { article });
+    success(res, '查询文章成功。', { article });
   } catch (error) {
     failure(res, error);
   }

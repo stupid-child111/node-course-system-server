@@ -1,8 +1,8 @@
-"use strict";
+'use strict';
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("Chapters", {
+    await queryInterface.createTable('Chapters', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -37,11 +37,11 @@ module.exports = {
         type: Sequelize.DATE,
       },
     });
-    await queryInterface.addIndex("Chapters", {
-      fields: ["courseId"],
+    await queryInterface.addIndex('Chapters', {
+      fields: ['courseId'],
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("Chapters");
+    await queryInterface.dropTable('Chapters');
   },
 };

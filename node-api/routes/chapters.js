@@ -1,16 +1,16 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const { Course, Category, Chapter, User } = require("../models");
-const { success, failure } = require("../utils/responses");
-const { NotFound } = require("http-errors");
-const { setKey, getKey } = require("../utils/redis");
-const { NotFound, Forbidden } = require("http-errors");
+const { Course, Category, Chapter, User } = require('../models');
+const { success, failure } = require('../utils/responses');
+const { NotFound } = require('http-errors');
+const { setKey, getKey } = require('../utils/redis');
+const { NotFound, Forbidden } = require('http-errors');
 
 /**
  * 查询章节详情
  * GET /chapters/:id
  */
-router.get("/:id", async function (req, res) {
+router.get('/:id', async function (req, res) {
   try {
     const { id } = req.params;
 
@@ -18,7 +18,7 @@ router.get("/:id", async function (req, res) {
     let chapter = await getKey(`chapter:${id}`);
     if (!chapter) {
       chapter = await Chapter.findByPk(id, {
-        attributes: { exclude: ["CourseId"] },
+        attributes: { exclude: ['CourseId'] },
       });
       if (!chapter) {
         throw new NotFound(`ID: ${id}的章节未找到。`);
@@ -33,7 +33,7 @@ router.get("/:id", async function (req, res) {
     let course = await getKey(`course:${chapter.courseId}`);
     if (!course) {
       course = await Course.findByPk(chapter.courseId, {
-        attributes: { exclude: ["CategoryId", "UserId"] },
+        attributes: { exclude: ['CategoryId', 'UserId'] },
       });
       await setKey(`course:${chapter.courseId}`, course);
     }
@@ -42,7 +42,7 @@ router.get("/:id", async function (req, res) {
     let user = await getKey(`user:${course.userId}`);
     if (!user) {
       user = await User.findByPk(course.userId, {
-        attributes: { exclude: ["password"] },
+        attributes: { exclude: ['password'] },
       });
       await setKey(`user:${course.userId}`, user);
     }
@@ -51,17 +51,17 @@ router.get("/:id", async function (req, res) {
     let chapters = await getKey(`chapters:${course.id}`);
     if (!chapters) {
       chapters = await Chapter.findAll({
-        attributes: { exclude: ["CourseId", "content"] },
+        attributes: { exclude: ['CourseId', 'content'] },
         where: { courseId: course.id },
         order: [
-          ["rank", "ASC"],
-          ["id", "DESC"],
+          ['rank', 'ASC'],
+          ['id', 'DESC'],
         ],
       });
       await setKey(`chapters:${course.id}`, chapters);
     }
 
-    success(res, "查询章节成功。", { chapter, course, user, chapters });
+    success(res, '查询章节成功。', { chapter, course, user, chapters });
   } catch (error) {
     failure(res, error);
   }
@@ -83,7 +83,7 @@ async function checkUserRole(req, chapter) {
   const allowedRoles = [1, 100]; // 大会员和管理员的角色ID
   const user = await User.findByPk(req.userId);
   if (!allowedRoles.includes(user.role)) {
-    throw new Forbidden("您没有权限浏览，请先购买大会员后再访问。");
+    throw new Forbidden('您没有权限浏览，请先购买大会员后再访问。');
   }
 }
 

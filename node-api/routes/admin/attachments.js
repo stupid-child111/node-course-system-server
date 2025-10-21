@@ -1,15 +1,15 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const { Attachment, User } = require("../../models");
-const { NotFound } = require("http-errors");
-const { success, failure } = require("../../utils/responses");
-const { client } = require("../../utils/aliyun");
+const { Attachment, User } = require('../../models');
+const { NotFound } = require('http-errors');
+const { success, failure } = require('../../utils/responses');
+const { client } = require('../../utils/aliyun');
 
 /**
  * 查询附件列表
  * GET /admin/attachments
  */
-router.get("/", async function (req, res) {
+router.get('/', async function (req, res) {
   try {
     const query = req.query;
     const currentPage = Math.abs(Number(query.currentPage)) || 1;
@@ -20,17 +20,17 @@ router.get("/", async function (req, res) {
       include: [
         {
           model: User,
-          as: "user",
-          attributes: ["id", "username", "avatar"],
+          as: 'user',
+          attributes: ['id', 'username', 'avatar'],
         },
       ],
-      order: [["id", "DESC"]],
+      order: [['id', 'DESC']],
       limit: pageSize,
       offset: offset,
     };
 
     const { count, rows } = await Attachment.findAndCountAll(condition);
-    success(res, "查询附件列表成功。", {
+    success(res, '查询附件列表成功。', {
       attachments: rows,
       pagination: {
         total: count,
@@ -47,7 +47,7 @@ router.get("/", async function (req, res) {
  * 删除附件
  * DELETE /admin/attachments/:id
  */
-router.delete("/:id", async function (req, res) {
+router.delete('/:id', async function (req, res) {
   try {
     const attachment = await getAttachment(req);
 
@@ -57,7 +57,7 @@ router.delete("/:id", async function (req, res) {
     // 删掉数据库中的附件记录
     await attachment.destroy();
 
-    success(res, "删除附件成功。");
+    success(res, '删除附件成功。');
   } catch (error) {
     failure(res, error);
   }

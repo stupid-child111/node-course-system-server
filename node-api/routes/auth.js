@@ -1,20 +1,20 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const { User } = require("../models");
-const { success, failure } = require("../utils/responses");
-const { NotFound, BadRequest, Unauthorized } = require("http-errors");
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-const { Op } = require("sequelize");
-const validateCaptcha = require("../middlewares/validate-captcha");
-const { delKey } = require("../utils/redis");
-const { mailProducer } = require("../utils/rabbit-mq");
+const { User } = require('../models');
+const { success, failure } = require('../utils/responses');
+const { NotFound, BadRequest, Unauthorized } = require('http-errors');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const { Op } = require('sequelize');
+const validateCaptcha = require('../middlewares/validate-captcha');
+const { delKey } = require('../utils/redis');
+const { mailProducer } = require('../utils/rabbit-mq');
 
 /**
  * 用户注册
  * POST /auth/sign_up
  */
-router.post("/sign_up", validateCaptcha, async function (req, res) {
+router.post('/sign_up', validateCaptcha, async function (req, res) {
   try {
     const body = {
       email: req.body.email,
@@ -33,7 +33,7 @@ router.post("/sign_up", validateCaptcha, async function (req, res) {
     // 将邮件发送请求放入队列
     const msg = {
       to: user.email,
-      subject: "「xmy和xhx的小窝」的注册成功通知",
+      subject: '「xmy和xhx的小窝」的注册成功通知',
       html: `
         您好，<span style="color: red">${user.nickname}</span>。<br><br>
         恭喜，您已成功注册会员！<br><br>
@@ -44,7 +44,7 @@ router.post("/sign_up", validateCaptcha, async function (req, res) {
     };
     await mailProducer(msg);
 
-    success(res, "创建用户成功。", { user }, 201);
+    success(res, '创建用户成功。', { user }, 201);
   } catch (error) {
     failure(res, error);
   }
@@ -54,16 +54,16 @@ router.post("/sign_up", validateCaptcha, async function (req, res) {
  * 用户登录
  * POST /auth/sign_in
  */
-router.post("/sign_in", async (req, res) => {
+router.post('/sign_in', async (req, res) => {
   try {
     const { login, password } = req.body;
 
     if (!login) {
-      throw new BadRequest("邮箱/用户名必须填写。");
+      throw new BadRequest('邮箱/用户名必须填写。');
     }
 
     if (!password) {
-      throw new BadRequest("密码必须填写。");
+      throw new BadRequest('密码必须填写。');
     }
 
     const condition = {
@@ -75,13 +75,13 @@ router.post("/sign_in", async (req, res) => {
     // 通过email或username，查询用户是否存在
     const user = await User.findOne(condition);
     if (!user) {
-      throw new NotFound("用户不存在，无法登录。");
+      throw new NotFound('用户不存在，无法登录。');
     }
 
     // 验证密码
     const isPasswordValid = bcrypt.compareSync(password, user.password);
     if (!isPasswordValid) {
-      throw new Unauthorized("密码错误。");
+      throw new Unauthorized('密码错误。');
     }
 
     // 生成身份验证令牌
@@ -90,9 +90,9 @@ router.post("/sign_in", async (req, res) => {
         userId: user.id,
       },
       process.env.SECRET,
-      { expiresIn: "30d" }
+      { expiresIn: '30d' }
     );
-    success(res, "登录成功。", { token });
+    success(res, '登录成功。', { token });
   } catch (error) {
     failure(res, error);
   }

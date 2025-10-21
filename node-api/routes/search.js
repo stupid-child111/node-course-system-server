@@ -1,14 +1,14 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const { Course } = require("../models");
-const { success, failure } = require("../utils/responses");
-const { Op } = require("sequelize");
+const { Course } = require('../models');
+const { success, failure } = require('../utils/responses');
+const { Op } = require('sequelize');
 
 /**
  * 搜索课程
  * GET /search
  */
-router.get("/", async function (req, res) {
+router.get('/', async function (req, res) {
   try {
     const query = req.query;
     const currentPage = Math.abs(Number(query.currentPage)) || 1;
@@ -17,8 +17,8 @@ router.get("/", async function (req, res) {
 
     const condition = {
       where: {},
-      attributes: { exclude: ["CategoryId", "UserId", "content"] },
-      order: [["id", "DESC"]],
+      attributes: { exclude: ['CategoryId', 'UserId', 'content'] },
+      order: [['id', 'DESC']],
       limit: pageSize,
       offset: offset,
     };
@@ -30,7 +30,7 @@ router.get("/", async function (req, res) {
     }
 
     const { count, rows } = await Course.findAndCountAll(condition);
-    success(res, "搜索课程成功。", {
+    success(res, '搜索课程成功。', {
       courses: rows,
       pagination: {
         total: count,

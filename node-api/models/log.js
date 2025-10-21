@@ -1,5 +1,5 @@
-"use strict";
-const { Model } = require("sequelize");
+'use strict';
+const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class Log extends Model {
     /**
@@ -18,14 +18,14 @@ module.exports = (sequelize, DataTypes) => {
       meta: {
         type: DataTypes.STRING,
         get() {
-          return JSON.parse(this.getDataValue("meta"));
+          return JSON.parse(this.getDataValue('meta'));
         },
       },
       timestamp: DataTypes.DATE,
     },
     {
       sequelize,
-      modelName: "Log",
+      modelName: 'Log',
       timestamps: false, // 没有 createdAt 与 updatedAt
     }
   );

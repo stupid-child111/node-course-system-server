@@ -1,24 +1,24 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const { Membership } = require("../../models");
-const { Op } = require("sequelize");
-const { NotFound } = require("http-errors");
-const { success, failure } = require("../../utils/responses");
-const { delKey } = require("../../utils/redis");
+const { Membership } = require('../../models');
+const { Op } = require('sequelize');
+const { NotFound } = require('http-errors');
+const { success, failure } = require('../../utils/responses');
+const { delKey } = require('../../utils/redis');
 
 /**
  * 查询大会员列表
  * GET /admin/memberships
  */
-router.get("/", async function (req, res) {
+router.get('/', async function (req, res) {
   try {
     const query = req.query;
 
     const condition = {
       where: {},
       order: [
-        ["rank", "ASC"],
-        ["id", "ASC"],
+        ['rank', 'ASC'],
+        ['id', 'ASC'],
       ],
     };
 
@@ -29,7 +29,7 @@ router.get("/", async function (req, res) {
     }
 
     const memberships = await Membership.findAll(condition);
-    success(res, "查询大会员列表成功。", {
+    success(res, '查询大会员列表成功。', {
       memberships: memberships,
     });
   } catch (error) {
@@ -41,10 +41,10 @@ router.get("/", async function (req, res) {
  * 查询大会员详情
  * GET /admin/memberships/:id
  */
-router.get("/:id", async function (req, res) {
+router.get('/:id', async function (req, res) {
   try {
     const membership = await getMembership(req);
-    success(res, "查询大会员成功。", { membership });
+    success(res, '查询大会员成功。', { membership });
   } catch (error) {
     failure(res, error);
   }
@@ -54,14 +54,14 @@ router.get("/:id", async function (req, res) {
  * 创建大会员
  * POST /admin/memberships
  */
-router.post("/", async function (req, res) {
+router.post('/', async function (req, res) {
   try {
     const body = filterBody(req);
 
     const membership = await Membership.create(body);
     await clearCache();
 
-    success(res, "创建大会员成功。", { membership }, 201);
+    success(res, '创建大会员成功。', { membership }, 201);
   } catch (error) {
     failure(res, error);
   }
@@ -71,7 +71,7 @@ router.post("/", async function (req, res) {
  * 更新大会员
  * PUT /admin/memberships/:id
  */
-router.put("/:id", async function (req, res) {
+router.put('/:id', async function (req, res) {
   try {
     const membership = await getMembership(req);
     const body = filterBody(req);
@@ -79,7 +79,7 @@ router.put("/:id", async function (req, res) {
     await membership.update(body);
     await clearCache(membership);
 
-    success(res, "更新大会员成功。", { membership: membership });
+    success(res, '更新大会员成功。', { membership: membership });
   } catch (error) {
     failure(res, error);
   }
@@ -89,13 +89,13 @@ router.put("/:id", async function (req, res) {
  * 删除大会员
  * DELETE /admin/memberships/:id
  */
-router.delete("/:id", async function (req, res) {
+router.delete('/:id', async function (req, res) {
   try {
     const membership = await getMembership(req);
     await membership.destroy();
     await clearCache(membership);
 
-    success(res, "删除大会员成功。");
+    success(res, '删除大会员成功。');
   } catch (error) {
     failure(res, error);
   }
@@ -136,7 +136,7 @@ function filterBody(req) {
  * @returns {Promise<void>}
  */
 async function clearCache(membership = null) {
-  await delKey("memberships");
+  await delKey('memberships');
 
   if (membership) {
     await delKey(`membership:${membership.id}`);

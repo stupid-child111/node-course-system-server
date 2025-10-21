@@ -1,17 +1,17 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const { Chapter, Course } = require("../../models");
-const { Op } = require("sequelize");
-const { NotFound, BadRequest } = require("http-errors");
-const { success, failure } = require("../../utils/responses");
-const { delKey } = require("../../utils/redis");
+const { Chapter, Course } = require('../../models');
+const { Op } = require('sequelize');
+const { NotFound, BadRequest } = require('http-errors');
+const { success, failure } = require('../../utils/responses');
+const { delKey } = require('../../utils/redis');
 
 /***
  * 查询章节列表
  * GET /admin/chapters
  */
 
-router.get("/", async function (req, res) {
+router.get('/', async function (req, res) {
   try {
     // 获取查询参数
     const query = req.query;
@@ -20,15 +20,15 @@ router.get("/", async function (req, res) {
     const offset = (currentPage - 1) * pageSize;
 
     if (!query.courseId) {
-      throw new BadRequest("获取章节列表失败，课程ID不能为空。");
+      throw new BadRequest('获取章节列表失败，课程ID不能为空。');
     }
 
     const condition = {
       ...getCondition(),
       where: {},
       order: [
-        ["rank", "ASC"],
-        ["id", "ASC"],
+        ['rank', 'ASC'],
+        ['id', 'ASC'],
       ],
       limit: pageSize,
       offset: offset,
@@ -55,7 +55,7 @@ router.get("/", async function (req, res) {
     const { count, rows } = await Chapter.findAndCountAll(condition);
 
     // 返回查询结果
-    success(res, "查询章节列表成功。", {
+    success(res, '查询章节列表成功。', {
       chapters: rows,
       pagination: { total: count, currentPage, pageSize },
     });
@@ -68,10 +68,10 @@ router.get("/", async function (req, res) {
  * 查询章节详情
  * GET /admin/chapters/:id
  */
-router.get("/:id", async function (req, res) {
+router.get('/:id', async function (req, res) {
   try {
     const chapter = await getChapter(req);
-    success(res, "查询章节详情成功", { chapter });
+    success(res, '查询章节详情成功', { chapter });
   } catch (error) {
     failure(res, error);
   }
@@ -81,18 +81,18 @@ router.get("/:id", async function (req, res) {
  * 创建章节
  * POST /admin/chapters
  */
-router.post("/", async function (req, res) {
+router.post('/', async function (req, res) {
   try {
     const body = filterBody(req);
 
     // 创建章节，并增加课程章节数
     const chapter = await Chapter.create(body);
-    await Course.increment("chaptersCount", {
+    await Course.increment('chaptersCount', {
       where: { id: chapter.courseId },
     });
     await clearCache(chapter);
 
-    success(res, "创建章节成功。", { chapter }, 201);
+    success(res, '创建章节成功。', { chapter }, 201);
   } catch (error) {
     failure(res, error);
   }
@@ -102,18 +102,18 @@ router.post("/", async function (req, res) {
  * 删除章节
  * DELETE /admin/chapters/:id
  */
-router.delete("/:id", async function (req, res) {
+router.delete('/:id', async function (req, res) {
   try {
     const chapter = await getChapter(req);
 
     // 删除章节，并减少课程章节数
     await chapter.destroy();
-    await Course.decrement("chaptersCount", {
+    await Course.decrement('chaptersCount', {
       where: { id: chapter.courseId },
     });
     await clearCache(chapter);
 
-    success(res, "删除章节成功。");
+    success(res, '删除章节成功。');
   } catch (error) {
     failure(res, error);
   }
@@ -123,14 +123,14 @@ router.delete("/:id", async function (req, res) {
  * 更新章节
  * PUT /admin/chapters/:id
  */
-router.put("/:id", async function (req, res) {
+router.put('/:id', async function (req, res) {
   try {
     const chapter = await getChapter(req);
     const body = filterBody(req);
     await chapter.update(body);
     await clearCache(chapter);
 
-    success(res, "更新章节成功。", { chapter });
+    success(res, '更新章节成功。', { chapter });
   } catch (error) {
     failure(res, error);
   }
@@ -158,12 +158,12 @@ function filterBody(req) {
  */
 function getCondition() {
   return {
-    attributes: { exclude: ["CourseId"] },
+    attributes: { exclude: ['CourseId'] },
     include: [
       {
         model: Course,
-        as: "course",
-        attributes: ["id", "name"],
+        as: 'course',
+        attributes: ['id', 'name'],
       },
     ],
   };

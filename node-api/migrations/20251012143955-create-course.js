@@ -1,8 +1,8 @@
-"use strict";
+'use strict';
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("Courses", {
+    await queryInterface.createTable('Courses', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -13,8 +13,8 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         validate: {
-          notNull: { msg: "分类ID必须填写。" },
-          notEmpty: { msg: "分类ID不能为空。" },
+          notNull: { msg: '分类ID必须填写。' },
+          notEmpty: { msg: '分类ID不能为空。' },
           async isPresent(value) {
             const category = await sequelize.models.Category.findByPk(value);
             if (!category) {
@@ -27,8 +27,8 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         validate: {
-          notNull: { msg: "用户ID必须填写。" },
-          notEmpty: { msg: "用户ID不能为空。" },
+          notNull: { msg: '用户ID必须填写。' },
+          notEmpty: { msg: '用户ID不能为空。' },
           async isPresent(value) {
             const user = await sequelize.models.User.findByPk(value);
             if (!user) {
@@ -41,15 +41,15 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
         validate: {
-          notNull: { msg: "名称必须填写。" },
-          notEmpty: { msg: "名称不能为空。" },
-          len: { args: [2, 45], msg: "名称长度必须是2 ~ 45之间。" },
+          notNull: { msg: '名称必须填写。' },
+          notEmpty: { msg: '名称不能为空。' },
+          len: { args: [2, 45], msg: '名称长度必须是2 ~ 45之间。' },
         },
       },
       image: {
         type: Sequelize.STRING,
         validate: {
-          isUrl: { msg: "图片地址不正确。" },
+          isUrl: { msg: '图片地址不正确。' },
         },
       },
       recommended: {
@@ -57,7 +57,7 @@ module.exports = {
         validate: {
           isIn: {
             args: [[true, false]],
-            msg: "是否推荐的值必须是，推荐：true 不推荐：false。",
+            msg: '是否推荐的值必须是，推荐：true 不推荐：false。',
           },
         },
       },
@@ -66,7 +66,7 @@ module.exports = {
         validate: {
           isIn: {
             args: [[true, false]],
-            msg: "是否入门课程的值必须是，推荐：true 不推荐：false。",
+            msg: '是否入门课程的值必须是，推荐：true 不推荐：false。',
           },
         },
       },
@@ -82,14 +82,14 @@ module.exports = {
         type: Sequelize.DATE,
       },
     });
-    await queryInterface.addIndex("Courses", {
-      fields: ["categoryId"],
+    await queryInterface.addIndex('Courses', {
+      fields: ['categoryId'],
     });
-    await queryInterface.addIndex("Courses", {
-      fields: ["userId"],
+    await queryInterface.addIndex('Courses', {
+      fields: ['userId'],
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("Courses");
+    await queryInterface.dropTable('Courses');
   },
 };

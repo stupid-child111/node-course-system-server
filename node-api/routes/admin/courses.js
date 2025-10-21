@@ -1,17 +1,17 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const { Course, Category, User, Chapter } = require("../../models");
-const { Op } = require("sequelize");
-const { NotFound, Conflict } = require("http-errors");
-const { success, failure } = require("../../utils/responses");
-const { getKeysByPattern, delKey } = require("../../utils/redis");
+const { Course, Category, User, Chapter } = require('../../models');
+const { Op } = require('sequelize');
+const { NotFound, Conflict } = require('http-errors');
+const { success, failure } = require('../../utils/responses');
+const { getKeysByPattern, delKey } = require('../../utils/redis');
 
 /***
  * 查询课程列表
  * GET /admin/courses
  */
 
-router.get("/", async function (req, res) {
+router.get('/', async function (req, res) {
   try {
     // 获取查询参数
     const query = req.query;
@@ -22,7 +22,7 @@ router.get("/", async function (req, res) {
     const condition = {
       ...getCondition(),
       where: {},
-      order: [["id", "DESC"]],
+      order: [['id', 'DESC']],
       limit: pageSize,
       offset: offset,
     };
@@ -42,11 +42,11 @@ router.get("/", async function (req, res) {
     }
 
     if (query.recommended) {
-      condition.where.recommended = query.recommended === "true";
+      condition.where.recommended = query.recommended === 'true';
     }
 
     if (query.introductory) {
-      condition.where.introductory = query.introductory === "true";
+      condition.where.introductory = query.introductory === 'true';
     }
 
     // 查询数据
@@ -56,7 +56,7 @@ router.get("/", async function (req, res) {
     const { count, rows } = await Course.findAndCountAll(condition);
 
     // 返回查询结果
-    success(res, "查询课程列表成功。", {
+    success(res, '查询课程列表成功。', {
       courses: rows,
       pagination: { total: count, currentPage, pageSize },
     });
@@ -69,10 +69,10 @@ router.get("/", async function (req, res) {
  * 查询课程详情
  * GET /admin/courses/:id
  */
-router.get("/:id", async function (req, res) {
+router.get('/:id', async function (req, res) {
   try {
     const course = await getCourse(req);
-    success(res, "查询课程详情成功", { course });
+    success(res, '查询课程详情成功', { course });
   } catch (error) {
     failure(res, error);
   }
@@ -82,7 +82,7 @@ router.get("/:id", async function (req, res) {
  * 创建课程
  * POST /admin/courses
  */
-router.post("/", async function (req, res) {
+router.post('/', async function (req, res) {
   try {
     const body = filterBody(req);
     // 获取当前登录的用户 ID
@@ -92,7 +92,7 @@ router.post("/", async function (req, res) {
     const course = await Course.create(body);
     await clearCache();
 
-    success(res, "创建课程成功。", { course }, 201);
+    success(res, '创建课程成功。', { course }, 201);
   } catch (error) {
     failure(res, error);
   }
@@ -102,18 +102,18 @@ router.post("/", async function (req, res) {
  * 删除课程
  * DELETE /admin/courses/:id
  */
-router.delete("/:id", async function (req, res) {
+router.delete('/:id', async function (req, res) {
   try {
     const course = await getCourse(req);
 
     const count = await Chapter.count({ where: { courseId: req.params.id } });
     if (count > 0) {
-      throw new Conflict("当前课程有章节，无法删除。");
+      throw new Conflict('当前课程有章节，无法删除。');
     }
     await course.destroy();
     await clearCache(course);
 
-    success(res, "删除课程成功。");
+    success(res, '删除课程成功。');
   } catch (error) {
     failure(res, error);
   }
@@ -123,14 +123,14 @@ router.delete("/:id", async function (req, res) {
  * 更新课程
  * PUT /admin/courses/:id
  */
-router.put("/:id", async function (req, res) {
+router.put('/:id', async function (req, res) {
   try {
     const course = await getCourse(req);
     const body = filterBody(req);
     await course.update(body);
     await clearCache(course);
 
-    success(res, "更新课程成功。", { course });
+    success(res, '更新课程成功。', { course });
   } catch (error) {
     failure(res, error);
   }
@@ -160,17 +160,17 @@ function filterBody(req) {
 function getCondition() {
   return {
     distinct: true,
-    attributes: { exclude: ["CategoryId", "UserId"] },
+    attributes: { exclude: ['CategoryId', 'UserId'] },
     include: [
       {
         model: Category,
-        as: "category",
-        attributes: ["id", "name"],
+        as: 'category',
+        attributes: ['id', 'name'],
       },
       {
         model: User,
-        as: "user",
-        attributes: ["id", "username", "avatar"],
+        as: 'user',
+        attributes: ['id', 'username', 'avatar'],
       },
     ],
   };
@@ -201,7 +201,7 @@ async function getCourse(req) {
  * @returns {Promise<void>}
  */
 async function clearCache(course = null) {
-  let keys = await getKeysByPattern("courses:*");
+  let keys = await getKeysByPattern('courses:*');
   if (keys.length !== 0) {
     await delKey(keys);
   }

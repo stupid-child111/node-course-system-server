@@ -1,22 +1,22 @@
-"use strict";
+'use strict';
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.bulkInsert(
-      "Memberships",
+      'Memberships',
       [
         {
-          name: "xmy月付无敌大会员（月付）",
+          name: 'xmy月付无敌大会员（月付）',
           durationMonths: 1,
           price: 10,
           rank: 1,
-          description: "超值之选！",
+          description: '超值之选！',
           createdAt: new Date(),
           updatedAt: new Date(),
         },
         {
-          name: "xmy年费永恒大会员（年付）",
+          name: 'xmy年费永恒大会员（年付）',
           durationMonths: 12,
           price: 100,
           rank: 2,
@@ -30,6 +30,6 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.bulkDelete("Memberships", null, {});
+    await queryInterface.bulkDelete('Memberships', null, {});
   },
 };

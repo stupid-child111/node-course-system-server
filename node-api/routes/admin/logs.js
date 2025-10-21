@@ -1,20 +1,20 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const { Log } = require("../../models");
-const { NotFound } = require("http-errors");
-const { success, failure } = require("../../utils/responses");
+const { Log } = require('../../models');
+const { NotFound } = require('http-errors');
+const { success, failure } = require('../../utils/responses');
 
 /**
  * 查询日志列表
  * GET /admin/logs
  */
-router.get("/", async function (req, res) {
+router.get('/', async function (req, res) {
   try {
     const logs = await Log.findAll({
-      order: [["id", "DESC"]],
+      order: [['id', 'DESC']],
     });
 
-    success(res, "查询日志列表成功。", { logs: logs });
+    success(res, '查询日志列表成功。', { logs: logs });
   } catch (error) {
     failure(res, error);
   }
@@ -24,11 +24,11 @@ router.get("/", async function (req, res) {
  * 查询日志详情
  * GET /admin/logs/:id
  */
-router.get("/:id", async function (req, res) {
+router.get('/:id', async function (req, res) {
   try {
     const log = await getLog(req);
 
-    success(res, "查询日志成功。", { log });
+    success(res, '查询日志成功。', { log });
   } catch (error) {
     failure(res, error);
   }
@@ -38,13 +38,12 @@ router.get("/:id", async function (req, res) {
  * 清空全部日志
  * DELETE /admin/logs/clear
  */
-router.delete("/clear", async function (req, res) {
+router.delete('/clear', async function (req, res) {
   try {
-    
     await Log.destroy({ truncate: true });
     //truncate: true  清空表并重置自增ID
 
-    success(res, "清空日志成功。");
+    success(res, '清空日志成功。');
   } catch (error) {
     failure(res, error);
   }
@@ -54,12 +53,12 @@ router.delete("/clear", async function (req, res) {
  * 删除日志
  * DELETE /admin/logs/:id
  */
-router.delete("/:id", async function (req, res) {
+router.delete('/:id', async function (req, res) {
   try {
     const log = await getLog(req);
     await log.destroy();
 
-    success(res, "删除日志成功。");
+    success(res, '删除日志成功。');
   } catch (error) {
     failure(res, error);
   }

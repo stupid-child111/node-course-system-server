@@ -19,17 +19,21 @@ const amqplib = require('amqplib');
     console.log(' [*] 等待接收消息在 %s 队列中. 按 CTRL+C 退出', queue);
 
     // 当接收到消息
-    channel.consume(queue, (msg) => {
-      // 打印接收到的消息内容
-      console.log('[x] 接收到了：%s', msg.content.toString());
+    channel.consume(
+      queue,
+      (msg) => {
+        // 打印接收到的消息内容
+        console.log('[x] 接收到了：%s', msg.content.toString());
 
-      // 如果不是自动确认，需要手动确认消息
-      // channel.ack(msg);
-    }, {
-      // noAck: 表示是否自动确认消息，设置为true表示自动确认，设置为false表示手动确认
-      // 如果设置为false，需要手动确认消息，否则消息会被重复消费。例如：channel.ack(msg)
-      noAck: true
-    });
+        // 如果不是自动确认，需要手动确认消息
+        // channel.ack(msg);
+      },
+      {
+        // noAck: 表示是否自动确认消息，设置为true表示自动确认，设置为false表示手动确认
+        // 如果设置为false，需要手动确认消息，否则消息会被重复消费。例如：channel.ack(msg)
+        noAck: true,
+      }
+    );
   } catch (error) {
     console.log(error);
   }

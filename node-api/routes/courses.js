@@ -1,16 +1,16 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const { Course, Category, Chapter, User } = require("../models");
-const { Op } = require("sequelize");
-const { success, failure } = require("../utils/responses");
-const { NotFound, BadRequest } = require("http-errors");
-const { setKey, getKey } = require("../utils/redis");
+const { Course, Category, Chapter, User } = require('../models');
+const { Op } = require('sequelize');
+const { success, failure } = require('../utils/responses');
+const { NotFound, BadRequest } = require('http-errors');
+const { setKey, getKey } = require('../utils/redis');
 
 /**
  * 查询课程列表
  * GET /courses
  */
-router.get("/", async function (req, res) {
+router.get('/', async function (req, res) {
   try {
     const query = req.query;
     const categoryId = query.categoryId;
@@ -19,19 +19,19 @@ router.get("/", async function (req, res) {
     const offset = (currentPage - 1) * pageSize;
 
     if (!categoryId) {
-      throw new BadRequest("获取课程列表失败，分类ID不能为空。");
+      throw new BadRequest('获取课程列表失败，分类ID不能为空。');
     }
 
     const cacheKey = `courses:${categoryId}:${currentPage}:${pageSize}`;
     let data = await getKey(cacheKey);
     if (data) {
-      return success(res, "查询文章列表成功。", data);
+      return success(res, '查询文章列表成功。', data);
     }
 
     const condition = {
-      attributes: { exclude: ["CategoryId", "UserId", "content"] },
+      attributes: { exclude: ['CategoryId', 'UserId', 'content'] },
       where: { categoryId: categoryId },
-      order: [["id", "DESC"]],
+      order: [['id', 'DESC']],
       limit: pageSize,
       offset: offset,
     };
@@ -47,7 +47,7 @@ router.get("/", async function (req, res) {
     };
     await setKey(cacheKey, data);
 
-    success(res, "查询课程列表成功。", data);
+    success(res, '查询课程列表成功。', data);
   } catch (error) {
     failure(res, error);
   }
@@ -57,7 +57,7 @@ router.get("/", async function (req, res) {
  * 查询课程详情
  * GET /courses/:id
  */
-router.get("/:id", async function (req, res) {
+router.get('/:id', async function (req, res) {
   try {
     const { id } = req.params;
 
@@ -65,7 +65,7 @@ router.get("/:id", async function (req, res) {
     let course = await getKey(`course:${id}`);
     if (!course) {
       course = await Course.findByPk(id, {
-        attributes: { exclude: ["CategoryId", "UserId"] },
+        attributes: { exclude: ['CategoryId', 'UserId'] },
       });
       if (!course) {
         throw new NotFound(`ID: ${id}的课程未找到。`);
@@ -84,7 +84,7 @@ router.get("/:id", async function (req, res) {
     let user = await getKey(`user:${course.userId}`);
     if (!user) {
       user = await User.findByPk(course.userId, {
-        attributes: { exclude: ["password"] },
+        attributes: { exclude: ['password'] },
       });
       await setKey(`user:${course.userId}`, user);
     }
@@ -93,17 +93,17 @@ router.get("/:id", async function (req, res) {
     let chapters = await getKey(`chapters:${course.id}`);
     if (!chapters) {
       chapters = await Chapter.findAll({
-        attributes: { exclude: ["CourseId", "content"] },
+        attributes: { exclude: ['CourseId', 'content'] },
         where: { courseId: course.id },
         order: [
-          ["rank", "ASC"],
-          ["id", "DESC"],
+          ['rank', 'ASC'],
+          ['id', 'DESC'],
         ],
       });
       await setKey(`chapters:${course.id}`, chapters);
     }
 
-    success(res, "查询课程成功。", { course, category, user, chapters });
+    success(res, '查询课程成功。', { course, category, user, chapters });
   } catch (error) {
     failure(res, error);
   }

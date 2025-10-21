@@ -1,17 +1,17 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const { success, failure } = require("../utils/responses");
-const { config, client, singleFileUpload } = require("../utils/aliyun");
-const { BadRequest } = require("http-errors");
-const { Attachment } = require("../models");
-const { v4: uuidv4 } = require("uuid");
-const moment = require("moment");
+const { success, failure } = require('../utils/responses');
+const { config, client, singleFileUpload } = require('../utils/aliyun');
+const { BadRequest } = require('http-errors');
+const { Attachment } = require('../models');
+const { v4: uuidv4 } = require('uuid');
+const moment = require('moment');
 
 /**
  * 阿里云 OSS 客户端上传
  * POST /uploads/aliyun
  */
-router.post("/aliyun", function (req, res) {
+router.post('/aliyun', function (req, res) {
   try {
     singleFileUpload(req, res, async function (error) {
       if (error) {
@@ -19,7 +19,7 @@ router.post("/aliyun", function (req, res) {
       }
 
       if (!req.file) {
-        return failure(res, new BadRequest("请选择要上传的文件。"));
+        return failure(res, new BadRequest('请选择要上传的文件。'));
       }
 
       // 记录附件信息
@@ -29,9 +29,9 @@ router.post("/aliyun", function (req, res) {
         // 可取消以下这行的屏蔽后，再尝试一下。
         // originalname: Buffer.from(req.file.originalname, 'latin1').toString()
         userId: req.userId,
-        fullpath: req.file.path + "/" + req.file.filename,
+        fullpath: req.file.path + '/' + req.file.filename,
       });
-      success(res, "上传成功。", { file: req.file });
+      success(res, '上传成功。', { file: req.file });
     });
   } catch (error) {
     failure(res, error);
@@ -42,9 +42,9 @@ router.post("/aliyun", function (req, res) {
  * 获取直传阿里云 OSS 授权信息
  * GET /uploads/aliyun_direct
  */
-router.get("/aliyun_direct", async function (req, res, next) {
+router.get('/aliyun_direct', async function (req, res, next) {
   // 有效期
-  const date = moment().add(1, "days");
+  const date = moment().add(1, 'days');
 
   // 自定义上传目录及文件名
   const key = `uploads/${uuidv4()}`;
@@ -53,14 +53,10 @@ router.get("/aliyun_direct", async function (req, res, next) {
   const policy = {
     expiration: date.toISOString(), // 限制有效期
     conditions: [
-      ["content-length-range", 0, 5 * 1024 * 1024], // 限制上传文件的大小为：5MB
+      ['content-length-range', 0, 5 * 1024 * 1024], // 限制上传文件的大小为：5MB
       { bucket: client.options.bucket }, // 限制上传的 bucket
-      ["eq", "$key", key], // 限制上传的文件名
-      [
-        "in",
-        "$content-type",
-        ["image/jpeg", "image/png", "image/gif", "image/webp"],
-      ], // 限制文件类型
+      ['eq', '$key', key], // 限制上传的文件名
+      ['in', '$content-type', ['image/jpeg', 'image/png', 'image/gif', 'image/webp']], // 限制文件类型
     ],
   };
 
@@ -74,16 +70,16 @@ router.get("/aliyun_direct", async function (req, res, next) {
 
   // 返回参数
   const params = {
-    expire: date.format("YYYY-MM-DD HH:mm:ss"),
+    expire: date.format('YYYY-MM-DD HH:mm:ss'),
     policy: formData.policy,
     signature: formData.Signature,
     accessid: formData.OSSAccessKeyId,
     host,
     key,
-    url: host + "/" + key,
+    url: host + '/' + key,
   };
 
-  success(res, "获取阿里云 OSS 授权信息成功。", params);
+  success(res, '获取阿里云 OSS 授权信息成功。', params);
 });
 
 module.exports = router;
