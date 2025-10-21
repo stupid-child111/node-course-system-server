@@ -22,6 +22,7 @@ const adminChaptersRouter = require("./routes/admin/chapters");
 const adminChartsRouter = require("./routes/admin/charts");
 const adminAuthRouter = require("./routes/admin/auth");
 const adminLogsRouter = require("./routes/admin/logs");
+const adminMembershipsRouter = require("./routes/admin/memberships");
 const categoriesRouter = require("./routes/categories");
 const coursesRouter = require("./routes/courses");
 const chaptersRouter = require("./routes/chapters");
@@ -34,6 +35,7 @@ const likesRouter = require("./routes/likes");
 const uploadsRouter = require("./routes/uploads");
 const adminAttachmentsRouter = require("./routes/admin/attachments");
 const captchaRouter = require("./routes/captcha");
+const membershipsRouter = require("./routes/memberships");
 
 const app = express();
 
@@ -54,10 +56,11 @@ app.use("/admin/courses", adminAuth, adminCoursesRouter);
 app.use("/admin/chapters", adminAuth, adminChaptersRouter);
 app.use("/admin/charts", adminAuth, adminChartsRouter);
 app.use("/admin/logs", adminAuth, adminLogsRouter);
+app.use("/admin/memberships", adminAuth, adminMembershipsRouter);
 app.use("/admin/auth", adminAuthRouter);
 app.use("/categories", categoriesRouter);
 app.use("/courses", coursesRouter);
-app.use("/chapters", chaptersRouter);
+app.use('/chapters', userAuth, chaptersRouter);
 app.use("/articles", articlesRouter);
 app.use("/settings", settingsRouter);
 app.use("/search", searchRouter);
@@ -66,5 +69,6 @@ app.use("/likes", userAuth, likesRouter);
 app.use("/uploads", userAuth, uploadsRouter);
 app.use("/admin/attachments", adminAuth, adminAttachmentsRouter);
 app.use("/captcha", captchaRouter);
+app.use("/memberships", membershipsRouter);
 
 module.exports = app;
