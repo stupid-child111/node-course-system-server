@@ -1,5 +1,6 @@
 const createError = require("http-errors");
 const multer = require("multer");
+const logger = require("./logger");
 /**
  * 请求成功
  * @param res
@@ -22,8 +23,8 @@ function success(res, message, data = {}, code = 200) {
  */
 function failure(res, error) {
   // 默认响应为 500，服务器错误
-  let statusCode = 500;
-  let errors = "服务器错误";
+  let statusCode;
+  let errors;
 
   if (error.name === "SequelizeValidationError") {
     // Sequelize 验证数据错误
@@ -48,6 +49,10 @@ function failure(res, error) {
       statusCode = 400;
       errors = error.message;
     }
+  }else {
+    statusCode = 500;
+    errors = "服务器内部错误。";
+    logger.error("服务器错误",error)
   }
 
   res.status(statusCode).json({
