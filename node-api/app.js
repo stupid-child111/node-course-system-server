@@ -3,6 +3,12 @@ const path = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 require("dotenv").config();
+// 启动邮件消费者
+const { mailConsumer } = require("./utils/rabbit-mq");
+(async () => {
+  await mailConsumer();
+  console.log("邮件消费者已启动");
+})();
 const adminAuth = require("./middlewares/admin-auth");
 const cors = require("cors");
 
